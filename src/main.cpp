@@ -1,27 +1,43 @@
 #include "App.hpp"
 
 #include "Core/Context.hpp"
+#include "pages/HomePage.hpp"
+#include "pages/InstructionPage.hpp"
+#include <memory>
+#include <vector>
 
-int main(int, char**) {
-    auto context = Core::Context::GetInstance();
-    App app;
+int main(int, char **) {
+  enum class PhaseEnum { HomePage = 0 };
 
-    while (!context->GetExit()) {
-        switch (app.GetCurrentState()) {
-            case App::State::START:
-                app.Start();
-                break;
+  auto context = Core::Context::GetInstance();
+  auto phases = std::vector<std::shared_ptr<App>>();
+  auto currentPhase = PhaseEnum::HomePage;
 
-            case App::State::UPDATE:
-                app.Update();
-                break;
+  phases.push_back(std::make_shared<HomePage>(HomePage()));
+  phases.push_back(std::make_shared<InstructionPage>(InstructionPage()));
 
-            case App::State::END:
-                app.End();
-                context->SetExit(true);
-                break;
-        }
-        context->Update();
+  while (!context->GetExit()) {
+    auto &phase = phases[static_cast<size_t>(currentPhase)];
+    if (phase->nextPhase && *phase->nextPhase) {
+      currentPhase =
+          static_cast<PhaseEnum>(static_cast<size_t>(currentPhase) + 1);
+      phase->nextPhase = std::make_shared<bool>(false);
     }
-    return 0;
+    switch (phase->GetCurrentState()) {
+    case App::State::START:
+      phase->Start();
+      break;
+
+    case App::State::UPDATE:
+      phase->Update();
+      break;
+
+    case App::State::END:
+      phase->End();
+      context->SetExit(true);
+      break;
+    }
+    context->Update();
+  }
+  return 0;
 }

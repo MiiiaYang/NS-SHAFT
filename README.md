@@ -1,24 +1,24 @@
-# PTSD Template
+# Giraffe Adventure
 
-This is a [PTSD](https://github.com/ntut-open-source-club/practical-tools-for-simple-design) framework template for students taking OOPL2024s.
+## Description
 
-## Quick Start
+This is a [PTSD](https://github.com/ntut-open-source-club/practical-tools-for-simple-design) framework practice for students taking the OOPL course from NTUT.
 
-1. Use this template to create a new repository
-   ![github screenshot](https://github.com/ntut-rick/ptsd-template/assets/126899559/ef62242f-03ed-481d-b858-12b730c09beb)
+## Installation
 
-2. Clone your repository
+1. Clone the repository
 
-   ```bash
-   git clone YOUR_GIT_URL --recursive
-   ```
+```bash
+git clone https://github.com/ntut-open-source-club/PTSD-Practice-Giraffe-Adventure
+```
 
-3. Build your project
+## Tasks
 
-  > [!WARNING]
-  > Please build your project in `Debug` because our `Release` path is broken D:
-   
-   ```sh
-   cmake -DCMAKE_BUILD_TYPE=Debug -B build # -G Ninja
-   ```
-   better read [PTSD README](https://github.com/ntut-open-source-club/practical-tools-for-simple-design)
+- [X] Replace the image of m_giraffe with giraffe.png in Resources!,
+- [X] Make the giraffe move into the red area using the keyboard!
+- [X] Make the chest disappear when the giraffe touches it!
+- [X] Write a program to give your bee friend an animation!
+- [X] Write a program to open the door when your character touches it!
+- [X] Design a program to countdown, stop animation after OK display
+
+Hint:  Look for `TODO`s if you are lost.
