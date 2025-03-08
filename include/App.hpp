@@ -1,8 +1,11 @@
 #ifndef APP_HPP
 #define APP_HPP
 
-#include "pch.hpp" // IWYU pragma: export
+#include "BackgroundImage.hpp"
 #include "Util/Renderer.hpp"
+#include "enum.hpp"
+#include "pch.hpp" // IWYU pragma: export
+#include <memory>
 
 class App {
 public:
@@ -13,6 +16,7 @@ public:
   };
 
   State GetCurrentState() const { return m_CurrentState; }
+  Enum::PhaseEnum GetPhase() const { return phase; }
 
   virtual ~App() = default;
 
@@ -22,9 +26,12 @@ public:
 
   virtual void End();
 
-  std::shared_ptr<bool> nextPhase;
+  void NavigationTo(Enum::PhaseEnum phase) { this->phase = phase; }
+
+  Enum::PhaseEnum phase;
   Util::Renderer m_Root;
   State m_CurrentState = State::START;
+  std::shared_ptr<BackgroundImage> m_Background;
 };
 
 #endif
