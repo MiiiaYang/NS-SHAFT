@@ -2,8 +2,8 @@
 #define APP_HPP
 
 #include "BackgroundImage.hpp"
+#include "Enum.hpp"
 #include "Util/Renderer.hpp"
-#include "enum.hpp"
 #include "pch.hpp" // IWYU pragma: export
 #include <memory>
 

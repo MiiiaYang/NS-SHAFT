@@ -1,7 +1,7 @@
 #include "App.hpp"
 
 #include "Core/Context.hpp"
-#include "enum.hpp"
+#include "Enum.hpp"
 #include "pages/HomePage.hpp"
 #include "pages/InstructionPage.hpp"
 #include <memory>
