@@ -74,3 +74,11 @@ Replace `<PageName>` with your desired page name.
 ```c++
 NavigationTo(Enum::PhaseEnum::<PageName>);
 ```
+
+## Get cursor position 
+```c++
+if (Util::Input::IsKeyPressed(Util::Keycode::MOUSE_LB)) {
+   auto pos = Util::Input::GetCursorPosition();
+   LOG_DEBUG(pos);
+}
+```
