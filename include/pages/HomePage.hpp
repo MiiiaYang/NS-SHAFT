@@ -1,13 +1,13 @@
 #ifndef HOMEPAGE_HPP
 #define HOMEPAGE_HPP
 
+#include "../component/ButtonImage.hpp"
 #include "App.hpp"
-#include "Character.hpp"
 
 class HomePage : public App {
 public:
-  std::shared_ptr<Character> m_Giraffe;
-  std::shared_ptr<Character> m_Chest;
+  std::shared_ptr<ButtonImage> m_Button1;
+  std::shared_ptr<ButtonImage> m_Button2;
 
   explicit HomePage() { phase = Enum::PhaseEnum::HomePage; }
 

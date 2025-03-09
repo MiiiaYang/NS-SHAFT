@@ -1,8 +1,8 @@
-#include "pages/InstructionPage.hpp"
+#include "pages/LevelPage.hpp"
 #include "BackgroundImage.hpp"
 #include "Character.hpp"
 
-void InstructionPage::Start() {
+void LevelPage::Start() {
   m_Background = std::make_shared<BackgroundImage>();
   m_Background->SetBackground("/background/background.png");
   m_Root.AddChild(m_Background);
@@ -16,8 +16,8 @@ void InstructionPage::Start() {
   m_CurrentState = State::UPDATE;
 };
 
-void InstructionPage::Update() { m_Root.Update(); };
+void LevelPage::Update() { m_Root.Update(); };
 
-void InstructionPage::End(){
+void LevelPage::End(){
     // Implementation here
 };
