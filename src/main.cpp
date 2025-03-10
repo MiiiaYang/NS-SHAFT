@@ -3,7 +3,6 @@
 #include "Core/Context.hpp"
 #include "Enum.hpp"
 #include "pages/HomePage.hpp"
-#include "pages/InstructionPage.hpp"
 #include "pages/LevelPage.hpp"
 #include "pages/UnlimitPage.hpp"
 #include <memory>
@@ -16,7 +15,6 @@ int main(int, char **) {
   auto currentPhase = Enum::PhaseEnum::HomePage;
 
   phases.push_back(std::make_shared<HomePage>(HomePage()));
-  phases.push_back(std::make_shared<InstructionPage>(InstructionPage()));
   phases.push_back(std::make_shared<UnlimitPage>(UnlimitPage()));
   phases.push_back(std::make_shared<LevelPage>(LevelPage()));
 

@@ -35,10 +35,6 @@ void HomePage::Start() {
 
 void HomePage::Update() {
 
-  if (Util::Input::IsKeyPressed(Util::Keycode::SPACE)) {
-    NavigationTo(Enum::PhaseEnum::InstructionPage);
-  }
-
   std::vector<ButtonImage *> buttons = {m_Button1.get(), m_Button2.get()};
   ButtonImage::UpdateButtonNavigation(buttons);
 
