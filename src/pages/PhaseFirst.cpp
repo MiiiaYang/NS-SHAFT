@@ -1,8 +1,11 @@
 #include "pages/PhaseFirst.hpp"
 #include "BackgroundImage.hpp"
 #include "Character.hpp"
+#include "component/basicstairs.hpp"
 #include "Util/Input.hpp"
 #include "Util/Logger.hpp"
+#include <string>
+#include <memory>
 
 void PhaseFirst::Start() {
   m_Background = std::make_shared<BackgroundImage>();
@@ -15,6 +18,28 @@ void PhaseFirst::Start() {
   m_boy->SetScale({0.5f, 0.5f});
   m_Root.AddChild(m_boy);
 
+  glm::vec2 startPos = glm::vec2(95.0f, 240.0f);
+  int stairCount=8;
+  bool moveleft = true;
+  for (int i=0;i<stairCount;i++)
+  {
+    auto stair=  std::make_shared<basicstairs>(GA_RESOURCE_DIR "/stairs/general_stairs.png");
+    stair->SetPosition(startPos);
+
+    m_Root.AddChild(stair);
+    m_stairs.push_back(stair);
+    //count next stairs location
+    startPos.y-=70.0f;
+    if (moveleft)
+    {
+      startPos.x=-95.0f;
+    }
+    else
+    {
+      startPos.x=95.0f;
+    }
+    moveleft=!moveleft;
+  }
   m_CurrentState = State::UPDATE;
 };
 

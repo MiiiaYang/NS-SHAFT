@@ -3,10 +3,15 @@
 
 #include "App.hpp"
 #include "Character.hpp"
+#include "component/basicstairs.hpp"
+#include <string>
+#include <memory>
+#include <vector>
 
 class PhaseFirst : public App {
 public:
   std::shared_ptr<Character> m_boy;
+  std::vector<std::shared_ptr<basicstairs>> m_stairs;
 
   // gravity
   const float m_Gravity = 0.3f;
