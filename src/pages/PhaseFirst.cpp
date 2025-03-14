@@ -19,12 +19,18 @@ void PhaseFirst::Start() {
 };
 
 void PhaseFirst::Update() {
+  glm::vec2 target = m_boy->GetPosition();
   if (Util::Input::IsKeyPressed(Util::Keycode::A)) {
-    m_boy->SetPosition({m_boy->GetPosition().x - 5, m_boy->GetPosition().y});
+    target = {target.x - 5, target.y};
   }
 
   if (Util::Input::IsKeyPressed(Util::Keycode::D)) {
-    m_boy->SetPosition({m_boy->GetPosition().x + 5, m_boy->GetPosition().y});
+    target = {target.x + 5, target.y};
+  }
+
+  if (target.x > -186.000000 && target.x < 210.000000 &&
+      target.y > -330.000000 && target.y < 330.000000) {
+    m_boy->SetPosition(target);
   }
 
   // gravity
