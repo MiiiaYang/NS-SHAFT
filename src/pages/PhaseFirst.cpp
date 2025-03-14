@@ -2,6 +2,7 @@
 #include "BackgroundImage.hpp"
 #include "Character.hpp"
 #include "component/basicstairs.hpp"
+#include "component/EdgeSpikes.hpp"
 #include "Util/Input.hpp"
 #include "Util/Logger.hpp"
 #include <string>
@@ -40,6 +41,13 @@ void PhaseFirst::Start() {
     }
     moveleft=!moveleft;
   }
+
+  spike_up=std::make_shared<EdgeSpike>(GA_RESOURCE_DIR "/background/spikes_top.png");
+  spike_up->SetPosition({10.0f, 335.0f});
+  m_Root.AddChild(spike_up);
+  spike_down=std::make_shared<EdgeSpike>(GA_RESOURCE_DIR "/background/spikes_bottom.png");
+  spike_down->SetPosition({10.0f, -335.0f});
+  m_Root.AddChild(spike_down);
   m_CurrentState = State::UPDATE;
 };
 
