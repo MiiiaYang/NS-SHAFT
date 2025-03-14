@@ -2,7 +2,7 @@
 #define ENUM_HPP
 
 namespace Enum {
-enum class PhaseEnum { HomePage = 0, InstructionPage=1,UnlimitPage = 2 ,LevelPage = 3 };
+enum class PhaseEnum { HomePage = 0, UnlimitPage = 1, PhaseFirst = 2 };
 } // namespace Enum
 
 #endif // ENUM_HPP
