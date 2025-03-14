@@ -24,10 +24,9 @@ void HomePage::Start() {
   m_Button2->SetPosition({250, -250});
   m_Button2->SetNavigationCallback(
       [this](Enum::PhaseEnum page) { NavigationTo(page); },
-      Enum::PhaseEnum::LevelPage);
+      Enum::PhaseEnum::PhaseFirst);
   m_Root.AddChild(m_Button2);
 
-  // 預設選中 UnlimitPage
   m_Button1->SetSelected(true);
 
   m_CurrentState = State::UPDATE;
@@ -38,7 +37,6 @@ void HomePage::Update() {
   std::vector<ButtonImage *> buttons = {m_Button1.get(), m_Button2.get()};
   ButtonImage::UpdateButtonNavigation(buttons);
 
-  // **當按下 Enter 時，直接導航到當前選中的按鈕目標頁面**
   if (Util::Input::IsKeyPressed(Util::Keycode::RETURN)) {
     Enum::PhaseEnum selectedPage = ButtonImage::GetSelectedDestination();
     NavigationTo(selectedPage);
@@ -47,6 +45,4 @@ void HomePage::Update() {
   m_Root.Update();
 }
 
-void HomePage::End() {
-  // 這裡可以加上需要清理的東西
-}
+void HomePage::End() {}

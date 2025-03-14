@@ -31,6 +31,8 @@ public:
     m_Transform.translation = Position;
   }
 
+  void SetScale(const glm::vec2 &scale) { m_Transform.scale = scale; }
+
   // TODO: Implement the collision detection
   [[nodiscard]] bool IfCollides(const std::shared_ptr<Character> &other) const {
     (void)other;
