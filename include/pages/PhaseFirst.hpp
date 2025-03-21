@@ -3,8 +3,8 @@
 
 #include "App.hpp"
 #include "Character.hpp"
-#include "component/basicstairs.hpp"
 #include "component/EdgeSpikes.hpp"
+#include "component/BasicStairs.hpp"
 #include <memory>
 #include <vector>
 
