@@ -20,7 +20,7 @@ public:
   const float m_Gravity = 0.3f;
   float m_VerticalVelocity = 0.0f;
   bool m_IsGrounded = false;
-  const float m_GroundLevel = -200.0f;
+  const float m_GroundLevel = -315.0f;
 
   explicit PhaseFirst() { phase = Enum::PhaseEnum::PhaseFirst; }
 
