@@ -3,22 +3,24 @@
 
 #include "App.hpp"
 #include "Character.hpp"
-#include "component/basicstairs.hpp"
 #include "component/EdgeSpikes.hpp"
+#include "component/BasicStairs.hpp"
 #include <memory>
 #include <vector>
 
 class PhaseFirst : public App {
 public:
   std::shared_ptr<Character> m_boy;
-  std::vector<std::shared_ptr<basicstairs>> m_stairs;
+  std::vector<std::shared_ptr<BasicStairs>> m_stairs;
   std::shared_ptr<EdgeSpike> spike_up;
   std::shared_ptr<EdgeSpike> spike_down;
+  std::vector<std::shared_ptr<EdgeSpike>> m_spikes;
+
   // gravity
   const float m_Gravity = 0.3f;
   float m_VerticalVelocity = 0.0f;
   bool m_IsGrounded = false;
-  const float m_GroundLevel = -200.0f;
+  const float m_GroundLevel = -315.0f;
 
   explicit PhaseFirst() { phase = Enum::PhaseEnum::PhaseFirst; }
 
