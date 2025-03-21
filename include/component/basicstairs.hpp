@@ -24,8 +24,13 @@ public:
   }
   void SetScale(const glm::vec2 &scale) { m_Transform.scale = scale; }
 
+  [[nodiscard]] const glm::vec2 &GetPosition() const {
+    return m_Transform.translation;
+  }
+
 private:
   std::string m_ImagePath;
+
 };
 
 #endif // BASICSTAIRS_HPP
