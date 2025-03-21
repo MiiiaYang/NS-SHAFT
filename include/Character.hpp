@@ -45,6 +45,25 @@ public:
     return false;
   }
 
+  [[nodiscard]] bool IsCollidingWith(const std::shared_ptr<GameObject>& other) const
+  {
+    if (!other) return false;
+
+    const glm::vec2 thisPos = this->GetTransform().translation;
+    const glm::vec2 thisSize = this->GetScaledSize();
+    const glm::vec2 otherPos = other->GetTransform().translation;
+    const glm::vec2 otherSize = other->GetScaledSize();
+
+    const bool collisionX = thisPos.x - thisSize.x / 2 < otherPos.x + otherSize.x / 2 &&
+                  thisPos.x + thisSize.x / 2 > otherPos.x - otherSize.x / 2;
+
+    const bool collisionY = thisPos.y - thisSize.y / 2 < otherPos.y + otherSize.y / 2 &&
+                      thisPos.y + thisSize.y / 2 > otherPos.y - otherSize.y / 2;
+
+    return collisionX && collisionY;
+  }
+
+
   // TODO: Add and implement more methods and properties as needed to finish
   // Giraffe Adventure.
 

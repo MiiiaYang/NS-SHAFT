@@ -7,6 +7,7 @@
 #include "Util/Logger.hpp"
 #include <string>
 #include <memory>
+#include "iostream"
 
 void PhaseFirst::Start() {
   m_Background = std::make_shared<BackgroundImage>();
@@ -24,7 +25,7 @@ void PhaseFirst::Start() {
   bool moveleft = true;
   for (int i=0;i<stairCount;i++)
   {
-    auto stair=  std::make_shared<basicstairs>(GA_RESOURCE_DIR "/stairs/general_stairs.png");
+    auto stair=  std::make_shared<BasicStairs>(GA_RESOURCE_DIR "/stairs/general_stairs.png");
     stair->SetPosition(startPos);
 
     m_Root.AddChild(stair);
@@ -47,6 +48,10 @@ void PhaseFirst::Start() {
   m_Root.AddChild(spike_up);
   spike_down=std::make_shared<EdgeSpike>(GA_RESOURCE_DIR "/background/spikes_bottom.png");
   spike_down->SetPosition({10.0f, -335.0f});
+
+  m_spikes.push_back(spike_down);
+  m_spikes.push_back(spike_up);
+
   m_Root.AddChild(spike_down);
   m_CurrentState = State::UPDATE;
 };
@@ -61,27 +66,36 @@ void PhaseFirst::Update() {
     target = {target.x + 5, target.y};
   }
 
+  //
+  if (Util::Input::IsKeyPressed(Util::Keycode::W)) {
+    target = {target.x, target.y+5};
+  }
+  if (Util::Input::IsKeyPressed(Util::Keycode::S)) {
+    target = {target.x, target.y-5};
+  }
+  //
+
   if (target.x > -186.000000 && target.x < 210.000000 &&
       target.y > -330.000000 && target.y < 330.000000) {
     m_boy->SetPosition(target);
   }
 
-  // gravity
-  float posX = m_boy->GetPosition().x;
-  float posY = m_boy->GetPosition().y;
+  // // gravity
+  // float posX = m_boy->GetPosition().x;
+  // float posY = m_boy->GetPosition().y;
+  //
+  // m_VerticalVelocity -= m_Gravity;
+  // posY += m_VerticalVelocity;
+  //
+  // if (posY <= m_GroundLevel) {
+  //   posY = m_GroundLevel;
+  //   m_VerticalVelocity = 0.0f;
+  //   m_IsGrounded = true;
+  // } else {
+  //   m_IsGrounded = false;
+  // }
 
-  m_VerticalVelocity -= m_Gravity;
-  posY += m_VerticalVelocity;
-
-  if (posY <= m_GroundLevel) {
-    posY = m_GroundLevel;
-    m_VerticalVelocity = 0.0f;
-    m_IsGrounded = true;
-  } else {
-    m_IsGrounded = false;
-  }
-
-  m_boy->SetPosition({posX, posY});
+  // m_boy->SetPosition({posX, posY});
 
   if (m_IsGrounded && Util::Input::IsKeyPressed(Util::Keycode::W)) {
     m_VerticalVelocity = 10.0f;
@@ -93,6 +107,19 @@ void PhaseFirst::Update() {
     LOG_DEBUG(pos);
   }
 
+//樓梯碰撞
+  for (size_t i = 0; i < m_stairs.size(); i++)
+  {
+    if (m_boy->IsCollidingWith(m_stairs[i])) {
+      std::cout << "Colliding with stair " << i << std::endl;
+    }
+  }
+  //尖刺陣列碰撞
+  for (size_t i = 0; i < m_spikes.size(); i++) {
+    if (m_boy->IsCollidingWith(m_spikes[i])) {
+      std::cout << "Colliding with spike " << i << std::endl;
+    }
+  }
   m_Root.Update();
 };
 

@@ -5,14 +5,15 @@
 #ifndef BASICSTAIRS_HPP
 #define BASICSTAIRS_HPP
 
-#include "Util/GameObject.hpp"
+#include "Util/MyGameObject.hpp"
 #include "Util/Image.hpp"
 #include <string>
 
-class basicstairs:public Util::GameObject
+
+class BasicStairs:public Util::GameObject
 {
     public:
-    explicit basicstairs(const std::string &ImagePath)
+    explicit BasicStairs(const std::string &ImagePath)
     {
         m_ImagePath = ImagePath;
         m_Drawable = std::make_shared<Util::Image>(m_ImagePath);
