@@ -5,9 +5,9 @@
 #include <vector>
 
 #include "Util/Animation.hpp"
-#include "Util/MyGameObject.hpp"
+#include "Util/GameObject.hpp"
 
-class AnimatedCharacter : public MyGameObject {
+class AnimatedCharacter : public Util::GameObject {
 
 public:
   explicit AnimatedCharacter(const std::vector<std::string> &AnimationPaths);
