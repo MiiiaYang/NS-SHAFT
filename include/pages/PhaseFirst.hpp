@@ -6,6 +6,7 @@
 #include "component/EdgeSpikes.hpp"
 #include "component/LevelTitle.hpp"
 #include "component/BasicStairs.hpp"
+#include "component/PointSystem.hpp"
 #include <memory>
 #include <vector>
 
@@ -17,6 +18,7 @@ public:
   std::shared_ptr<EdgeSpike> spike_down;
   std::vector<std::shared_ptr<EdgeSpike>> m_spikes;
   std::shared_ptr<LevelTitle> m_levelTitle;
+  std::shared_ptr<PointSystem> m_pointbag;
   // gravity
   const float m_Gravity = 0.3f;
   float m_VerticalVelocity = 0.0f;
