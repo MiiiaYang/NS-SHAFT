@@ -51,19 +51,22 @@ void PhaseFirst::Start() {
       std::make_shared<EdgeSpike>(GA_RESOURCE_DIR "/background/spikes_top.png");
   spike_up->SetPosition({10.0f, 335.0f});
   m_Root.AddChild(spike_up);
+  m_spikes.push_back(spike_up);
+
   spike_down = std::make_shared<EdgeSpike>(GA_RESOURCE_DIR
                                            "/background/spikes_bottom.png");
   spike_down->SetPosition({10.0f, -335.0f});
-
+  m_Root.AddChild(spike_down);
   m_spikes.push_back(spike_down);
-  m_spikes.push_back(spike_up);
 
-  m_levelTitle = std::make_shared<LevelTitle>(GA_RESOURCE_DIR
-                                              "/level_title/level1_title.png");
-  m_levelTitle->SetPosition({-427.0f, 240.0f});
+  m_levelTitle=std::make_shared<LevelTitle>(GA_RESOURCE_DIR "/level_title/level1_title.png");
+  m_levelTitle->SetPosition({-470.0f, 260.0f});
   m_Root.AddChild(m_levelTitle);
 
-  m_Root.AddChild(spike_down);
+  m_pointbag=std::make_shared<PointSystem>(GA_RESOURCE_DIR "/background/achievement_bag.png");
+  m_pointbag->SetPosition({-410.0f, -240.0f});
+  m_Root.AddChild(m_pointbag);
+
   m_CurrentState = State::UPDATE;
 };
 
