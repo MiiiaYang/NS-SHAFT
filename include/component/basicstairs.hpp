@@ -23,6 +23,7 @@ public:
     m_Transform.translation = Position;
   }
   void SetScale(const glm::vec2 &scale) { m_Transform.scale = scale; }
+  glm::vec2 getPosition() const { return m_Transform.translation; }
 
 private:
   std::string m_ImagePath;
