@@ -3,9 +3,9 @@
 
 #include "App.hpp"
 #include "Character.hpp"
+#include "component/BasicStairs.hpp"
 #include "component/EdgeSpikes.hpp"
 #include "component/LevelTitle.hpp"
-#include "component/BasicStairs.hpp"
 #include <memory>
 #include <vector>
 
@@ -17,6 +17,8 @@ public:
   std::shared_ptr<EdgeSpike> spike_down;
   std::vector<std::shared_ptr<EdgeSpike>> m_spikes;
   std::shared_ptr<LevelTitle> m_levelTitle;
+  std::vector<std::shared_ptr<BackgroundImage>> m_Background;
+
   // gravity
   const float m_Gravity = 0.3f;
   float m_VerticalVelocity = 0.0f;
