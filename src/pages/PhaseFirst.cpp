@@ -5,11 +5,11 @@
 #include "Util/Logger.hpp"
 #include "component/BasicStairs.hpp"
 #include "component/EdgeSpikes.hpp"
-#include <memory>
 #include "iostream"
-#include <string>
+#include <algorithm> //(for std::sample)
+#include <memory>
 #include <random>
-#include <algorithm>  //(for std::sample)
+#include <string>
 #include <vector>
 
 void PhaseFirst::Start() {
@@ -161,9 +161,6 @@ void PhaseFirst::Update() {
       isOnStair = true;
       currentStair = m_stairs[i];
       break;
-    } else if (collisionResult.isColliding &&
-               collisionResult.side == Character::CollisionSide::Bottom) {
-      LOG_DEBUG("Botto");
     }
   }
 
@@ -201,7 +198,6 @@ void PhaseFirst::Update() {
       ++it;
     }
   }
-
 
   m_Root.Update();
 };
