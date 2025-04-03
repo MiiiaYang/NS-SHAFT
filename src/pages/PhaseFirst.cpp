@@ -63,32 +63,36 @@ void PhaseFirst::Start() {
   m_Root.AddChild(spike_down);
   m_spikes.push_back(spike_down);
 
-  m_levelTitle=std::make_shared<LevelTitle>(GA_RESOURCE_DIR "/level_title/level1_title.png");
+  m_levelTitle = std::make_shared<LevelTitle>(GA_RESOURCE_DIR
+                                              "/level_title/level1_title.png");
   m_levelTitle->SetPosition({-470.0f, 260.0f});
   m_Root.AddChild(m_levelTitle);
 
-  m_pointbag=std::make_shared<PointSystem>(GA_RESOURCE_DIR "/background/achievement_bag.png");
+  m_pointbag = std::make_shared<PointSystem>(GA_RESOURCE_DIR
+                                             "/background/achievement_bag.png");
   m_pointbag->SetPosition({-410.0f, -240.0f});
   m_pointbag->SetZIndex(10);
   m_Root.AddChild(m_pointbag);
 
-  //PointSystem
-  // 隨機選擇 () 個樓梯來放置點數
-  int totalPoints =5;
-  std::vector<std::shared_ptr<BasicStairs>> selectedStairs;  // 存放選中的樓梯
+  // PointSystem
+  //  隨機選擇 () 個樓梯來放置點數
+  int totalPoints = 5;
+  std::vector<std::shared_ptr<BasicStairs>> selectedStairs; // 存放選中的樓梯
 
   std::random_device rd;  // 隨機
-  std::mt19937 gen(rd());  // 使用 Mersenne Twister 隨機數生成器
-  std::sample(m_stairs.begin(), m_stairs.end(), std::back_inserter(selectedStairs), totalPoints, gen);
+  std::mt19937 gen(rd()); // 使用 Mersenne Twister 隨機數生成器
+  std::sample(m_stairs.begin(), m_stairs.end(),
+              std::back_inserter(selectedStairs), totalPoints, gen);
   // `std::sample()` 會從 `m_stairs` 中隨機選出 `totalPoints` 個不重複的元素
-  for (auto& stair : selectedStairs) {  // 遍歷選出的樓梯
-    auto point = std::make_shared<PointSystem>(GA_RESOURCE_DIR "/icon/badge.png");  // 創建點數
-    glm::vec2 stairPos = stair->GetPosition();  // 取得樓梯位置
+  for (auto &stair : selectedStairs) { // 遍歷選出的樓梯
+    auto point = std::make_shared<PointSystem>(GA_RESOURCE_DIR
+                                               "/icon/badge.png"); // 創建點數
+    glm::vec2 stairPos = stair->GetPosition(); // 取得樓梯位置
 
     // 設定點數的位置 (略高於樓梯)
     point->SetPosition({stairPos.x, stairPos.y + 20});
-    m_Root.AddChild(point);  // 加入場景
-    m_points.push_back(point);  // 存入點數列表
+    m_Root.AddChild(point);    // 加入場景
+    m_points.push_back(point); // 存入點數列表
   }
   m_CurrentState = State::UPDATE;
 };
