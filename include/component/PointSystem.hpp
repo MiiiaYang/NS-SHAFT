@@ -8,6 +8,7 @@
 #include "Util/Image.hpp"
 #include "component/Point.hpp"
 #include "iostream"
+
 class PointSystem:public Util::GameObject
 {
     public:
@@ -15,6 +16,7 @@ class PointSystem:public Util::GameObject
     {
         m_ImagePath = ImagePath;
         m_Drawable = std::make_shared<Util::Image>(m_ImagePath);
+
         m_MaxSlots = 10; // 初始化最多 10 個點數
     }
         void SetImage(const std::string &ImagePath)
@@ -26,6 +28,7 @@ class PointSystem:public Util::GameObject
         m_Transform.translation = Position;
     }
         void SetScale(const glm::vec2 &scale) { m_Transform.scale = scale; }
+
     void SetZIndex(float index) { m_ZIndex = index; }
 
     void AddPoint() {
@@ -53,5 +56,6 @@ class PointSystem:public Util::GameObject
             }
             return {startX + (index % 5) * spacing, startY};
         }
+
 };
 #endif //POINTSYSTEM_HPP

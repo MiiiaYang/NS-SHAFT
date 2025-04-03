@@ -3,6 +3,7 @@
 
 #include "App.hpp"
 #include "Character.hpp"
+#include "component/BasicStairs.hpp"
 #include "component/EdgeSpikes.hpp"
 #include "component/LevelTitle.hpp"
 #include "component/BasicStairs.hpp"
@@ -20,6 +21,8 @@ public:
   std::shared_ptr<LevelTitle> m_levelTitle;
   std::shared_ptr<PointSystem> m_pointbag;
   std::vector<std::shared_ptr<PointSystem>> m_points;
+  std::vector<std::shared_ptr<BackgroundImage>> m_Background;
+
   // gravity
   const float m_Gravity = 0.3f;
   float m_VerticalVelocity = 0.0f;
