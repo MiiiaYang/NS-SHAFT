@@ -5,6 +5,7 @@
 #include "SDL_keyboard.h"
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
+#include "iostream"
 #include <functional>
 #include <memory>
 #include <string>

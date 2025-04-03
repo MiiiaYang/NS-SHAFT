@@ -3,6 +3,7 @@
 
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
+#include "iostream"
 #include <string>
 
 class BackgroundImage : public Util::GameObject {

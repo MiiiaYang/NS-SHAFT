@@ -6,7 +6,6 @@
 #include "component/BasicStairs.hpp"
 #include "component/EdgeSpikes.hpp"
 #include "component/LevelTitle.hpp"
-#include "component/BasicStairs.hpp"
 #include "component/PointSystem.hpp"
 #include <memory>
 #include <vector>
