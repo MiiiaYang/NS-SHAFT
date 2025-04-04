@@ -16,7 +16,7 @@ class PointSystem:public Util::GameObject
     {
         m_ImagePath = ImagePath;
         m_Drawable = std::make_shared<Util::Image>(m_ImagePath);
-
+        m_PointCount=0;
         m_MaxSlots = 10; // 初始化最多 10 個點數
     }
         void SetImage(const std::string &ImagePath)
@@ -32,18 +32,20 @@ class PointSystem:public Util::GameObject
     void SetZIndex(float index) { m_ZIndex = index; }
 
     void AddPoint() {
-        glm::vec2 slotPos = GetSlotPosition(Points.size());  // 計算點數顯示位置
+        if (m_PointCount < m_MaxSlots)
+        {
+            m_PointCount++;
+        }
+        glm::vec2 slotPos = GetSlotPosition(m_PointCount-1);  // 計算點數顯示位置
         auto newPoint = std::make_shared<Point>(GA_RESOURCE_DIR "/icon/badge.png");
         newPoint->SetPosition(slotPos);
         newPoint->SetZIndex(20);
         AddChild(newPoint);
-        Points.push_back(newPoint);
-        std::cout << "newPoint"<<slotPos.x<<','<<slotPos.y<< std::endl;
     }
 
     private:
         std::string m_ImagePath;
-        std::vector<std::shared_ptr<Point>> Points;  // 存放已收集的點數
+        int m_PointCount;  // 存放已收集的點數
         int m_MaxSlots;
 
         // 計算背包內點數位置
