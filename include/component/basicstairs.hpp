@@ -24,6 +24,7 @@ public:
   }
   void SetScale(const glm::vec2 &scale) { m_Transform.scale = scale; }
   glm::vec2 getPosition() const { return m_Transform.translation; }
+  
 
   [[nodiscard]] const glm::vec2 &GetPosition() const {
     return m_Transform.translation;

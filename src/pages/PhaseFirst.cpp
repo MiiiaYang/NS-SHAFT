@@ -5,11 +5,9 @@
 #include "Util/Logger.hpp"
 #include "component/BasicStairs.hpp"
 #include "component/EdgeSpikes.hpp"
-#include "iostream"
 #include <algorithm> //(for std::sample)
 #include <memory>
 #include <random>
-#include <string>
 #include <vector>
 
 void PhaseFirst::Start() {
@@ -74,25 +72,22 @@ void PhaseFirst::Start() {
   m_pointbag->SetZIndex(10);
   m_Root.AddChild(m_pointbag);
 
-  // PointSystem
-  //  隨機選擇 () 個樓梯來放置點數
   int totalPoints = 5;
-  std::vector<std::shared_ptr<BasicStairs>> selectedStairs; // 存放選中的樓梯
+  std::vector<std::shared_ptr<BasicStairs>> selectedStairs;
 
-  std::random_device rd;  // 隨機
-  std::mt19937 gen(rd()); // 使用 Mersenne Twister 隨機數生成器
+  std::random_device rd;
+  std::mt19937 gen(rd());
   std::sample(m_stairs.begin(), m_stairs.end(),
               std::back_inserter(selectedStairs), totalPoints, gen);
   // `std::sample()` 會從 `m_stairs` 中隨機選出 `totalPoints` 個不重複的元素
-  for (auto &stair : selectedStairs) { // 遍歷選出的樓梯
+  for (auto &stair : selectedStairs) {
     auto point = std::make_shared<PointSystem>(GA_RESOURCE_DIR
                                                "/icon/badge.png"); // 創建點數
     glm::vec2 stairPos = stair->GetPosition(); // 取得樓梯位置
 
-    // 設定點數的位置 (略高於樓梯)
     point->SetPosition({stairPos.x, stairPos.y + 20});
-    m_Root.AddChild(point);    // 加入場景
-    m_points.push_back(point); // 存入點數列表
+    m_Root.AddChild(point);
+    m_points.push_back(point);
   }
   m_CurrentState = State::UPDATE;
 };
@@ -110,10 +105,18 @@ void PhaseFirst::Update() {
     std::swap(m_Background[0], m_Background[1]);
   }
 
+  // 樓梯移動
   for (auto stair : m_stairs) {
     auto pos = stair->getPosition();
     stair->SetPosition({pos.x, pos.y + 1});
   }
+
+  // 點數向上移動
+  for (auto point : m_points) {
+    auto pos = point->GetPosition();
+    point->SetPosition({pos.x, pos.y + 1});
+  }
+
 
   glm::vec2 target = m_boy->GetPosition();
   if (Util::Input::IsKeyPressed(Util::Keycode::A)) {
@@ -202,6 +205,6 @@ void PhaseFirst::Update() {
   m_Root.Update();
 };
 
-void PhaseFirst::End(){
-    // Implementation here
+void PhaseFirst::End() {
+  // Implementation here
 };
