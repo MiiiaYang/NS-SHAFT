@@ -1,6 +1,7 @@
 #include "App.hpp"
 #include "Core/Context.hpp"
 #include "Enum.hpp"
+#include "Util/Input.hpp"
 #include "pages/HomePage.hpp"
 #include "pages/PhaseFirst.hpp"
 #include "pages/UnlimitPage.hpp"
@@ -19,6 +20,12 @@ int main(int, char **) {
 
   while (!context->GetExit()) {
     auto &phase = phases[static_cast<size_t>(currentPhase)];
+
+    if (Util::Input::IsKeyPressed(Util::Keycode::ESCAPE)) {
+      context->SetExit(true);
+      continue;
+    }
+
     if (phase && (phase->GetPhase() != currentPhase)) {
       currentPhase = phase->GetPhase();
       continue;
