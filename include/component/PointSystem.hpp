@@ -41,6 +41,8 @@ public:
 
   glm::vec2 GetPosition() const { return m_Transform.translation; }
 
+  [[nodiscard]] int GetPointCount() const { return m_PointCount; }
+
 private:
   std::string m_ImagePath;
   int m_PointCount; // 存放已收集的點數
