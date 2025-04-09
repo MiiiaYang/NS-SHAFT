@@ -1,17 +1,17 @@
-#include "pages/PhaseFirst.hpp"
+#include "pages/PhaseSecond.hpp"
 #include "BackgroundImage.hpp"
 #include "Character.hpp"
-#include "Enum.hpp"
 #include "Util/Input.hpp"
 #include "Util/Logger.hpp"
 #include "component/BasicStairs.hpp"
 #include "component/EdgeSpikes.hpp"
+
 #include <algorithm> //(for std::sample)
 #include <memory>
 #include <random>
 #include <vector>
 
-void PhaseFirst::Start() {
+void PhaseSecond::Start() {
   // std::vector<std::shared_ptr<BackgroundImage>> m_Background;
 
   m_Background.push_back(std::make_shared<BackgroundImage>(
@@ -63,7 +63,7 @@ void PhaseFirst::Start() {
   m_spikes.push_back(spike_down);
 
   m_levelTitle = std::make_shared<LevelTitle>(GA_RESOURCE_DIR
-                                              "/level_title/level1_title.png");
+                                              "/level_title/level2_title.png");
   m_levelTitle->SetPosition({-470.0f, 260.0f});
   m_Root.AddChild(m_levelTitle);
 
@@ -93,7 +93,7 @@ void PhaseFirst::Start() {
   m_CurrentState = State::UPDATE;
 };
 
-void PhaseFirst::Update() {
+void PhaseSecond::Update() {
   // 移動背景
   for (auto background : m_Background) {
     auto pos = background->GetPosition();
@@ -257,13 +257,10 @@ void PhaseFirst::Update() {
       ++it;
     }
   }
-  if (m_pointbag->GetPointCount() >= 10) {
-    NavigationTo(Enum::PhaseEnum::PhaseSecond);
-  }
 
   m_Root.Update();
 };
 
-void PhaseFirst::End() {
+void PhaseSecond::End() {
   // Implementation here
 };
