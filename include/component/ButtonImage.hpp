@@ -9,7 +9,7 @@
 #include <memory>
 #include <string>
 #include <vector>
-
+#include <iostream>
 namespace Enum {
 enum class PhaseEnum;
 }
@@ -40,6 +40,7 @@ public:
         temp->SetImage(ImagePath(path));
       }
     }
+
   }
 
   void SetNavigationCallback(std::function<void(Enum::PhaseEnum)> callback,
@@ -107,10 +108,13 @@ public:
 
     UpdatePreviousKeyState();
   }
+  static void ResetSelection() {
+    s_SelectedDestination = Enum::PhaseEnum::None;
+  }
 
 private:
   static inline Enum::PhaseEnum s_SelectedDestination =
-      Enum::PhaseEnum::UnlimitPage;
+      Enum::PhaseEnum::None;
 
   std::function<void(Enum::PhaseEnum)> m_NavigationCallback;
   Enum::PhaseEnum m_Destination;

@@ -239,6 +239,8 @@ void PhaseFirst::Update() {
 
   for (size_t i = 0; i < m_spikes.size(); i++) {
     if (m_boy->IsCollidingWith(m_spikes[i]).isColliding) {
+      //測試死亡條件
+      NavigationTo(Enum::PhaseEnum::GameoverPage);
       LOG_DEBUG("Collide with spike");
     }
   }
@@ -252,7 +254,6 @@ void PhaseFirst::Update() {
       m_Root.RemoveChild(*it);
       it = m_points.erase(it); // 從列表中刪除
       LOG_DEBUG("Collide with Point");
-
     } else {
       ++it;
     }
