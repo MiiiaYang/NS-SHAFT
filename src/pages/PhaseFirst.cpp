@@ -117,6 +117,61 @@ void PhaseFirst::Update() {
     point->SetPosition({pos.x, pos.y + 1});
   }
 
+  for (auto it = m_stairs.begin(); it != m_stairs.end();) {
+    auto stair = *it;
+    auto pos = stair->getPosition();
+
+    if (pos.y > (m_Background[0]->GetSize().height / 2)) {
+      m_Root.RemoveChild(stair);
+      it = m_stairs.erase(it);
+      LOG_DEBUG("remove");
+    } else {
+      ++it;
+    }
+  }
+
+  for (auto it = m_points.begin(); it != m_points.end();) {
+    auto point = *it;
+    auto pos = point->GetPosition();
+
+    if (pos.y > (m_Background[0]->GetSize().height / 2)) {
+      m_Root.RemoveChild(point);
+      it = m_points.erase(it);
+    } else {
+      ++it;
+    }
+  }
+
+  static int frameCounter = 0;
+  frameCounter++;
+
+  if (frameCounter >= 80) {
+    frameCounter = 0;
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dis(0, 1);
+    std::uniform_int_distribution<> xPosDis(-115, 115);
+
+    if (dis(gen) < 0.6 && m_stairs.size() < 25) {
+      auto stair = std::make_shared<BasicStairs>(GA_RESOURCE_DIR
+                                                 "/stairs/general_stairs.png");
+
+      stair->SetPosition({static_cast<float>(xPosDis(gen)),
+                          -(m_Background[0]->GetSize().height / 2 + 50)});
+      m_Root.AddChild(stair);
+      m_stairs.push_back(stair);
+
+      if (dis(gen) < 0.4) {
+        auto point =
+            std::make_shared<PointSystem>(GA_RESOURCE_DIR "/icon/badge.png");
+        glm::vec2 stairPos = stair->GetPosition();
+        point->SetPosition({stairPos.x, stairPos.y + 20});
+        m_Root.AddChild(point);
+        m_points.push_back(point);
+      }
+    }
+  }
 
   glm::vec2 target = m_boy->GetPosition();
   if (Util::Input::IsKeyPressed(Util::Keycode::A)) {
