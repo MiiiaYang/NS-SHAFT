@@ -2,11 +2,11 @@
 #include "Core/Context.hpp"
 #include "Enum.hpp"
 #include "Util/Input.hpp"
+#include "pages/GameoverPage.hpp"
 #include "pages/HomePage.hpp"
 #include "pages/PhaseFirst.hpp"
 #include "pages/PhaseSecond.hpp"
 #include "pages/UnlimitPage.hpp"
-#include "pages/GameoverPage.hpp"
 #include <memory>
 #include <vector>
 
@@ -32,8 +32,8 @@ int main(int, char **) {
 
     if (phase && (phase->GetPhase() != currentPhase)) {
       currentPhase = phase->GetPhase();
-      continue;
     }
+
     switch (phase->GetCurrentState()) {
     case App::State::START:
       phase->Start();
@@ -45,7 +45,6 @@ int main(int, char **) {
 
     case App::State::END:
       phase->End();
-      context->SetExit(true);
       break;
     }
     context->Update();

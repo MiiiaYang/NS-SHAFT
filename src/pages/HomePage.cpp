@@ -45,4 +45,8 @@ void HomePage::Update() {
   m_Root.Update();
 }
 
-void HomePage::End() {}
+void HomePage::End() {
+  phase = Enum::PhaseEnum::HomePage;
+
+  m_CurrentState = State::START;
+}

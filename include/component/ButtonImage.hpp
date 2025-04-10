@@ -6,10 +6,10 @@
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
 #include <functional>
+#include <iostream>
 #include <memory>
 #include <string>
 #include <vector>
-#include <iostream>
 namespace Enum {
 enum class PhaseEnum;
 }
@@ -40,12 +40,15 @@ public:
         temp->SetImage(ImagePath(path));
       }
     }
-
   }
 
   void SetNavigationCallback(std::function<void(Enum::PhaseEnum)> callback,
                              Enum::PhaseEnum destination) {
     m_NavigationCallback = std::move(callback);
+    m_Destination = destination;
+  }
+
+  void SetNavigationCallback(Enum::PhaseEnum destination) {
     m_Destination = destination;
   }
 
@@ -113,8 +116,7 @@ public:
   }
 
 private:
-  static inline Enum::PhaseEnum s_SelectedDestination =
-      Enum::PhaseEnum::None;
+  static inline Enum::PhaseEnum s_SelectedDestination = Enum::PhaseEnum::None;
 
   std::function<void(Enum::PhaseEnum)> m_NavigationCallback;
   Enum::PhaseEnum m_Destination;

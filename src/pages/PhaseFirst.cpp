@@ -1,4 +1,5 @@
 #include "pages/PhaseFirst.hpp"
+#include "App.hpp"
 #include "BackgroundImage.hpp"
 #include "Character.hpp"
 #include "Enum.hpp"
@@ -266,5 +267,8 @@ void PhaseFirst::Update() {
 };
 
 void PhaseFirst::End() {
-  // Implementation here
+  phase = Enum::PhaseEnum::PhaseFirst;
+
+
+  m_CurrentState = App::State::START;
 };
