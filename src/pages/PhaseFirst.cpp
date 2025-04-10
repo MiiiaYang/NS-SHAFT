@@ -13,8 +13,6 @@
 #include <vector>
 
 void PhaseFirst::Start() {
-  // std::vector<std::shared_ptr<BackgroundImage>> m_Background;
-
   m_Background.push_back(std::make_shared<BackgroundImage>(
       "/background/background.png", glm::vec2(0, 0)));
   m_Background.push_back(std::make_shared<BackgroundImage>(
@@ -240,21 +238,15 @@ void PhaseFirst::Update() {
 
   for (size_t i = 0; i < m_spikes.size(); i++) {
     if (m_boy->IsCollidingWith(m_spikes[i]).isColliding) {
-      //測試死亡條件
       NavigationTo(Enum::PhaseEnum::GameoverPage);
-      LOG_DEBUG("Collide with spike");
     }
   }
 
-  // 檢查角色是否碰到點數
   for (auto it = m_points.begin(); it != m_points.end();) {
     if (m_boy->IsCollidingWith(*it).isColliding) {
-      // 更新背包
       m_pointbag->AddPoint();
-      // 確保點數完全移除
       m_Root.RemoveChild(*it);
-      it = m_points.erase(it); // 從列表中刪除
-      LOG_DEBUG("Collide with Point");
+      it = m_points.erase(it); 
     } else {
       ++it;
     }

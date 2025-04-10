@@ -13,18 +13,14 @@ void HomePage::Start() {
                                             "/menu/unlimit_button_hover.png",
                                             -250, -250, 100, 22);
   m_Button1->SetPosition({-250, -250});
-  m_Button1->SetNavigationCallback(
-      [this](Enum::PhaseEnum page) { NavigationTo(page); },
-      Enum::PhaseEnum::UnlimitPage);
+  m_Button1->SetNavigationCallback(Enum::PhaseEnum::UnlimitPage);
   m_Root.AddChild(m_Button1);
 
   m_Button2 = std::make_shared<ButtonImage>("/menu/level_button.png",
                                             "/menu/level_button_hover.png", 250,
                                             -250, 100, 22);
   m_Button2->SetPosition({250, -250});
-  m_Button2->SetNavigationCallback(
-      [this](Enum::PhaseEnum page) { NavigationTo(page); },
-      Enum::PhaseEnum::PhaseFirst);
+  m_Button2->SetNavigationCallback(Enum::PhaseEnum::PhaseFirst);
   m_Root.AddChild(m_Button2);
 
   m_Button1->SetSelected(true);
