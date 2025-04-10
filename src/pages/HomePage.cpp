@@ -44,5 +44,12 @@ void HomePage::Update() {
 void HomePage::End() {
   phase = Enum::PhaseEnum::HomePage;
 
+  m_Root.RemoveChild(m_Background);
+  m_Root.RemoveChild(m_Button1);
+  m_Root.RemoveChild(m_Button2);
+  m_Background.reset();
+  m_Button1.reset();
+  m_Button2.reset();
+
   m_CurrentState = State::START;
 }

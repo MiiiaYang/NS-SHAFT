@@ -261,6 +261,27 @@ void PhaseFirst::Update() {
 void PhaseFirst::End() {
   phase = Enum::PhaseEnum::PhaseFirst;
 
+  m_Root.RemoveChild(m_boy);
+  for (auto stair : m_stairs) {
+    m_Root.RemoveChild(stair);
+  }
+  m_stairs.clear();
+  m_Root.RemoveChild(spike_up);
+  m_Root.RemoveChild(spike_down);
+  for (auto spike : m_spikes) {
+    m_Root.RemoveChild(spike);
+  }
+  m_spikes.clear();
+  m_Root.RemoveChild(m_levelTitle);
+  m_Root.RemoveChild(m_pointbag);
+  for (auto point : m_points) {
+    m_Root.RemoveChild(point);
+  }
+  m_points.clear();
+  for (auto bg : m_Background) {
+    m_Root.RemoveChild(bg);
+  }
+  m_Background.clear();
 
   m_CurrentState = App::State::START;
 };

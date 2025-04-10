@@ -1,5 +1,6 @@
 #include "pages/GameoverPage.hpp"
 #include "BackgroundImage.hpp"
+#include "Enum.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "component/ButtonImage.hpp"
@@ -42,4 +43,15 @@ void GameoverPage::Update() {
   m_Root.Update();
 }
 
-void GameoverPage::End() {}
+void GameoverPage::End() {
+  phase = Enum::PhaseEnum::GameoverPage;
+
+  m_Root.RemoveChild(m_Background);
+  m_Root.RemoveChild(m_Button1);
+  m_Root.RemoveChild(m_Button2);
+  m_Background.reset();
+  m_Button1.reset();
+  m_Button2.reset();
+
+  m_CurrentState = State::START;
+}
