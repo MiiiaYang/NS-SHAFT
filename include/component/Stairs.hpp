@@ -2,17 +2,28 @@
 // Created by my100 on 25-3-14.
 //
 
-#ifndef BASICSTAIRS_HPP
-#define BASICSTAIRS_HPP
+#ifndef STAIRS_HPP
+#define STAIRS_HPP
 
 #include "Util/Image.hpp"
 #include <Util/GameObject.hpp>
+#include <memory>
 #include <string>
 
-class BasicStairs : public Util::GameObject {
+class Stairs : public Util::GameObject {
 public:
-  explicit BasicStairs(const std::string &ImagePath) {
-    m_ImagePath = ImagePath;
+  enum class StairType { BASE = 0, SPIKE = 1 };
+  StairType m_Type;
+  explicit Stairs(const StairType type) {
+    m_Type = type;
+    switch (type) {
+    case StairType::BASE:
+      m_ImagePath = (GA_RESOURCE_DIR "/stairs/general_stairs.png");
+      break;
+    case StairType::SPIKE:
+      m_ImagePath = (GA_RESOURCE_DIR "/stairs/spiked_stairs.png");
+      break;
+    }
     m_Drawable = std::make_shared<Util::Image>(m_ImagePath);
   }
   void SetImage(const std::string &ImagePath) {
@@ -24,7 +35,7 @@ public:
   }
   void SetScale(const glm::vec2 &scale) { m_Transform.scale = scale; }
   glm::vec2 getPosition() const { return m_Transform.translation; }
-  
+  StairType GetType() const { return m_Type; }
 
   [[nodiscard]] const glm::vec2 &GetPosition() const {
     return m_Transform.translation;
@@ -32,7 +43,6 @@ public:
 
 private:
   std::string m_ImagePath;
-
 };
 
-#endif // BASICSTAIRS_HPP
+#endif // STAIRS_HPP

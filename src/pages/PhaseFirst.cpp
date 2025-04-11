@@ -5,8 +5,8 @@
 #include "Enum.hpp"
 #include "Util/Input.hpp"
 #include "Util/Logger.hpp"
-#include "component/BasicStairs.hpp"
 #include "component/EdgeSpikes.hpp"
+#include "component/Stairs.hpp"
 #include <algorithm> //(for std::sample)
 #include <memory>
 #include <random>
@@ -41,8 +41,7 @@ void PhaseFirst::Start() {
   bool moveleft = true;
 
   for (int i = 0; i < stairCount; i++) {
-    auto stair = std::make_shared<BasicStairs>(GA_RESOURCE_DIR
-                                               "/stairs/general_stairs.png");
+    auto stair = std::make_shared<Stairs>(Stairs::StairType::BASE);
     stair->SetPosition(startPos);
 
     m_Root.AddChild(stair);
@@ -86,7 +85,7 @@ void PhaseFirst::Start() {
   m_Root.AddChild(m_pointbag);
 
   int totalPoints = 5;
-  std::vector<std::shared_ptr<BasicStairs>> selectedStairs;
+  std::vector<std::shared_ptr<Stairs>> selectedStairs;
 
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -199,8 +198,7 @@ void PhaseFirst::Update() {
     std::uniform_int_distribution<> xPosDis(-115, 115);
 
     if (dis(gen) < 0.6 && m_stairs.size() < 25) {
-      auto stair = std::make_shared<BasicStairs>(GA_RESOURCE_DIR
-                                                 "/stairs/general_stairs.png");
+      auto stair = std::make_shared<Stairs>(Stairs::StairType::BASE);
 
       stair->SetPosition({static_cast<float>(xPosDis(gen)),
                           -(m_Background[0]->GetSize().height / 2 + 50)});
@@ -228,7 +226,7 @@ void PhaseFirst::Update() {
   }
 
   // 地圖邊緣檢查
-  if (target.x > -186.000000 + 19 && target.x < 210.000000 - 19 &&
+  if (target.x > -210.000000 + 19 && target.x < 210.000000 - 19 &&
       target.y > -330.000000 && target.y < 330.000000) {
     m_boy->SetPosition(target);
   }
@@ -255,7 +253,7 @@ void PhaseFirst::Update() {
 
   // 樓梯碰撞檢測
   auto isOnStair = false;
-  std::shared_ptr<BasicStairs> currentStair = nullptr;
+  std::shared_ptr<Stairs> currentStair = nullptr;
 
   for (size_t i = 0; i < m_stairs.size(); i++) {
     auto collisionResult = m_boy->IsCollidingWith(m_stairs[i]);
