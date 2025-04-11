@@ -22,46 +22,59 @@ void PhaseSecond::Start() {
     m_Root.AddChild(background);
   }
 
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> xPosDis(-115, 115);
+  std::uniform_real_distribution<> dis(0, 1);
+
+  int initialStairsCount = 8;
+  float startY = 240.0f;
+  float yStep = 90.0f;
+
   m_boy = std::make_shared<Character>(GA_RESOURCE_DIR "/character/kid.png");
-  m_boy->SetPosition({86.0f, 300.0f});
   m_boy->SetZIndex(50);
   m_boy->SetScale({0.5f, 0.5f});
-  m_Root.AddChild(m_boy);
 
-  glm::vec2 startPos = glm::vec2(95.0f, 240.0f);
-  int stairCount = 8;
-  bool moveleft = true;
-
-  for (int i = 0; i < stairCount; i++) {
+  // 隨機生成樓梯
+  for (int i = 0; i < initialStairsCount; i++) {
     auto stair = std::make_shared<BasicStairs>(GA_RESOURCE_DIR
                                                "/stairs/general_stairs.png");
-    stair->SetPosition(startPos);
+    float xPos = static_cast<float>(xPosDis(gen));
+    float yPos = startY - i * yStep;
 
+    stair->SetPosition({xPos, yPos});
     m_Root.AddChild(stair);
     m_stairs.push_back(stair);
-    startPos.y -= 70.0f;
-    if (moveleft) {
-      startPos.x = -95.0f;
-    } else {
-      startPos.x = 95.0f;
+
+    if (dis(gen) < 0.3) {
+      auto point =
+          std::make_shared<PointSystem>(GA_RESOURCE_DIR "/icon/badge.png");
+      point->SetPosition({xPos, yPos + 20});
+      m_Root.AddChild(point);
+      m_points.push_back(point);
     }
-    moveleft = !moveleft;
+
+    if (i == 2) {
+      m_boy->SetPosition({xPos, yPos + 30.0f});
+    }
   }
+
+  m_Root.AddChild(m_boy);
 
   spike_up =
       std::make_shared<EdgeSpike>(GA_RESOURCE_DIR "/background/spikes_top.png");
-  spike_up->SetPosition({10.0f, 335.0f});
+  spike_up->SetPosition({10.0f, 345.0f});
   m_Root.AddChild(spike_up);
   m_spikes.push_back(spike_up);
 
   spike_down = std::make_shared<EdgeSpike>(GA_RESOURCE_DIR
                                            "/background/spikes_bottom.png");
-  spike_down->SetPosition({10.0f, -335.0f});
+  spike_down->SetPosition({10.0f, -345.0f});
   m_Root.AddChild(spike_down);
   m_spikes.push_back(spike_down);
 
   m_levelTitle = std::make_shared<LevelTitle>(GA_RESOURCE_DIR
-                                              "/level_title/level1_title.png");
+                                              "/level_title/level2_title.png");
   m_levelTitle->SetPosition({-470.0f, 260.0f});
   m_Root.AddChild(m_levelTitle);
 
@@ -70,24 +83,6 @@ void PhaseSecond::Start() {
   m_pointbag->SetPosition({-410.0f, -240.0f});
   m_pointbag->SetZIndex(10);
   m_Root.AddChild(m_pointbag);
-
-  int totalPoints = 5;
-  std::vector<std::shared_ptr<BasicStairs>> selectedStairs;
-
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::sample(m_stairs.begin(), m_stairs.end(),
-              std::back_inserter(selectedStairs), totalPoints, gen);
-  // `std::sample()` 會從 `m_stairs` 中隨機選出 `totalPoints` 個不重複的元素
-  for (auto &stair : selectedStairs) {
-    auto point = std::make_shared<PointSystem>(GA_RESOURCE_DIR
-                                               "/icon/badge.png"); // 創建點數
-    glm::vec2 stairPos = stair->GetPosition(); // 取得樓梯位置
-
-    point->SetPosition({stairPos.x, stairPos.y + 20});
-    m_Root.AddChild(point);
-    m_points.push_back(point);
-  }
 
   m_hpBar = std::make_shared<CharacterHP>(GA_RESOURCE_DIR
                                           "/background/blood_background.png");
@@ -98,7 +93,7 @@ void PhaseSecond::Start() {
   for (int i = 0; i < 5; ++i) {
     auto heart =
         std::make_shared<CharacterHP>(GA_RESOURCE_DIR "/icon/blood_fill.png");
-    heart->SetPosition({320.0f + i * 50.0f, -250.0f}); // 每顆心間隔30px
+    heart->SetPosition({320.0f + i * 50.0f, -250.0f});
     heart->SetZIndex(25);
     m_Root.AddChild(heart);
     m_hearts.push_back(heart);
@@ -107,6 +102,8 @@ void PhaseSecond::Start() {
   m_lives = 5;
   m_IsInvincible = false;
   m_InvincibleFrame = 0;
+  m_IsGrounded = true;
+  m_VerticalVelocity = 0.0f;
 
   m_CurrentState = State::UPDATE;
 };
@@ -172,7 +169,7 @@ void PhaseSecond::Update() {
     std::uniform_real_distribution<> dis(0, 1);
     std::uniform_int_distribution<> xPosDis(-115, 115);
 
-    if (dis(gen) < 0.6 && m_stairs.size() < 25) {
+    if (dis(gen) < 0.7) {
       auto stair = std::make_shared<BasicStairs>(GA_RESOURCE_DIR
                                                  "/stairs/general_stairs.png");
 
@@ -181,7 +178,7 @@ void PhaseSecond::Update() {
       m_Root.AddChild(stair);
       m_stairs.push_back(stair);
 
-      if (dis(gen) < 0.4) {
+      if (dis(gen) < 0.3) {
         auto point =
             std::make_shared<PointSystem>(GA_RESOURCE_DIR "/icon/badge.png");
         glm::vec2 stairPos = stair->GetPosition();
