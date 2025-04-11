@@ -52,6 +52,12 @@ void PhaseSecond::Start() {
     float yPos = startY - i * yStep;
 
     stair->SetPosition({xPos, yPos});
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> scaleDis(0.5f, 1.5f); // 寬度縮放範圍 0.5x ~ 1.5x
+    float scaleX = scaleDis(gen);
+
+    stair->SetScale({scaleX, 1.0f}); // 只縮放寬度
     m_Root.AddChild(stair);
     m_stairs.push_back(stair);
 
@@ -187,8 +193,13 @@ void PhaseSecond::Update() {
     std::mt19937 gen(rd());
     std::uniform_real_distribution<> dis(0, 1);
     std::uniform_int_distribution<> xPosDis(-115, 115);
+    std::uniform_real_distribution<float> scaleDis(0.5f, 1.5f);
 
-    if (dis(gen) < 0.7) {
+    if (dis(gen) < 0.6 ) {
+      auto stair = std::make_shared<BasicStairs>(GA_RESOURCE_DIR
+                                                 "/stairs/general_stairs.png");
+      float scaleX = scaleDis(gen); // 隨機寬度
+      stair->SetScale({scaleX, 1.0f}); // 設定樓梯寬度
 
       // 隨機生成樓梯
       auto stairType =
