@@ -57,17 +57,23 @@ Replace `<PageName>` with your desired page name.
        m_Root.Update();
    };
 
-   void <PageName>::End() {};
+   void <PageName>::End() {
+      phase = Enum::PhaseEnum::<PageName>;
+
+      // TODO: Remove all object
+
+      m_CurrentState = State::START;
+   };
    ```
 
-4. **Add Your Phase Page in main.cpp**
+1. **Add Your Phase Page in main.cpp**
    Do it like this:
    ```c++
    phases.push_back(std::make_shared<PageName>(PageName()));
    ```
    Remember to include your `.hpp` file.
 
-5. **Delete the build folder in the root directory and rebuild.**
+2. **Delete the build folder in the root directory and rebuild.**
 
 ## Navigate to Other Phase
 - Use the `NavigationTo()` function like this:
