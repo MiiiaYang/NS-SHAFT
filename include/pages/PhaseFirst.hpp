@@ -7,6 +7,7 @@
 #include "component/EdgeSpikes.hpp"
 #include "component/LevelTitle.hpp"
 #include "component/PointSystem.hpp"
+#include "component/CharacterHP.hpp"
 #include <memory>
 #include <vector>
 
@@ -21,6 +22,14 @@ public:
   std::shared_ptr<PointSystem> m_pointbag;
   std::vector<std::shared_ptr<PointSystem>> m_points;
   std::vector<std::shared_ptr<BackgroundImage>> m_Background;
+  std::shared_ptr<CharacterHP> m_hpBar;
+  std::vector<std::shared_ptr<CharacterHP>> m_hearts;
+
+  int m_lives=5;
+  bool m_IsInvincible = false;
+  int m_InvincibleFrame = 0;
+  const int m_InvincibleFrameDuration = 60; // 無敵持續 60 幀（大約1秒）
+
 
   // gravity
   const float m_Gravity = 0.3f;
