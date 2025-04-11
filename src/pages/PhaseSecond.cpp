@@ -3,8 +3,9 @@
 #include "Character.hpp"
 #include "Util/Input.hpp"
 #include "Util/Logger.hpp"
-#include "component/BasicStairs.hpp"
 #include "component/EdgeSpikes.hpp"
+#include "component/Stairs.hpp"
+#include "component/stairs.hpp"
 
 #include <algorithm> //(for std::sample)
 #include <memory>
@@ -12,6 +13,15 @@
 #include <vector>
 
 void PhaseSecond::Start() {
+  m_LevelMaskTimer = 0;
+  m_IsLevelMaskVisible = true;
+
+  m_LevelMask =
+      std::make_shared<Image>(GA_RESOURCE_DIR "/level_mask/level2_mask.png");
+  m_LevelMask->SetPosition({0.0f, 0.0f});
+  m_LevelMask->SetZIndex(100);
+  m_Root.AddChild(m_LevelMask);
+
   m_Background.push_back(std::make_shared<BackgroundImage>(
       "/background/background.png", glm::vec2(0, 0)));
   m_Background.push_back(std::make_shared<BackgroundImage>(
@@ -22,46 +32,58 @@ void PhaseSecond::Start() {
     m_Root.AddChild(background);
   }
 
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> xPosDis(-115, 115);
+  std::uniform_real_distribution<> dis(0, 1);
+
+  int initialStairsCount = 8;
+  float startY = 240.0f;
+  float yStep = 90.0f;
+
   m_boy = std::make_shared<Character>(GA_RESOURCE_DIR "/character/kid.png");
-  m_boy->SetPosition({86.0f, 300.0f});
   m_boy->SetZIndex(50);
   m_boy->SetScale({0.5f, 0.5f});
-  m_Root.AddChild(m_boy);
 
-  glm::vec2 startPos = glm::vec2(95.0f, 240.0f);
-  int stairCount = 8;
-  bool moveleft = true;
+  // 隨機生成樓梯
+  for (int i = 0; i < initialStairsCount; i++) {
+    auto stair = std::make_shared<Stairs>(Stairs::StairType::BASE);
+    float xPos = static_cast<float>(xPosDis(gen));
+    float yPos = startY - i * yStep;
 
-  for (int i = 0; i < stairCount; i++) {
-    auto stair = std::make_shared<BasicStairs>(GA_RESOURCE_DIR
-                                               "/stairs/general_stairs.png");
-    stair->SetPosition(startPos);
-
+    stair->SetPosition({xPos, yPos});
     m_Root.AddChild(stair);
     m_stairs.push_back(stair);
-    startPos.y -= 70.0f;
-    if (moveleft) {
-      startPos.x = -95.0f;
-    } else {
-      startPos.x = 95.0f;
+
+    if (dis(gen) < 0.3) {
+      auto point =
+          std::make_shared<PointSystem>(GA_RESOURCE_DIR "/icon/badge.png");
+      point->SetPosition({xPos, yPos + 20});
+      m_Root.AddChild(point);
+      m_points.push_back(point);
     }
-    moveleft = !moveleft;
+
+    if (i == 2) {
+      m_boy->SetPosition({xPos, yPos + 30.0f});
+    }
   }
+
+  m_Root.AddChild(m_boy);
 
   spike_up =
       std::make_shared<EdgeSpike>(GA_RESOURCE_DIR "/background/spikes_top.png");
-  spike_up->SetPosition({10.0f, 335.0f});
+  spike_up->SetPosition({10.0f, 345.0f});
   m_Root.AddChild(spike_up);
   m_spikes.push_back(spike_up);
 
   spike_down = std::make_shared<EdgeSpike>(GA_RESOURCE_DIR
                                            "/background/spikes_bottom.png");
-  spike_down->SetPosition({10.0f, -335.0f});
+  spike_down->SetPosition({10.0f, -345.0f});
   m_Root.AddChild(spike_down);
   m_spikes.push_back(spike_down);
 
   m_levelTitle = std::make_shared<LevelTitle>(GA_RESOURCE_DIR
-                                              "/level_title/level1_title.png");
+                                              "/level_title/level2_title.png");
   m_levelTitle->SetPosition({-470.0f, 260.0f});
   m_Root.AddChild(m_levelTitle);
 
@@ -70,24 +92,6 @@ void PhaseSecond::Start() {
   m_pointbag->SetPosition({-410.0f, -240.0f});
   m_pointbag->SetZIndex(10);
   m_Root.AddChild(m_pointbag);
-
-  int totalPoints = 5;
-  std::vector<std::shared_ptr<BasicStairs>> selectedStairs;
-
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::sample(m_stairs.begin(), m_stairs.end(),
-              std::back_inserter(selectedStairs), totalPoints, gen);
-  // `std::sample()` 會從 `m_stairs` 中隨機選出 `totalPoints` 個不重複的元素
-  for (auto &stair : selectedStairs) {
-    auto point = std::make_shared<PointSystem>(GA_RESOURCE_DIR
-                                               "/icon/badge.png"); // 創建點數
-    glm::vec2 stairPos = stair->GetPosition(); // 取得樓梯位置
-
-    point->SetPosition({stairPos.x, stairPos.y + 20});
-    m_Root.AddChild(point);
-    m_points.push_back(point);
-  }
 
   m_hpBar = std::make_shared<CharacterHP>(GA_RESOURCE_DIR
                                           "/background/blood_background.png");
@@ -98,7 +102,7 @@ void PhaseSecond::Start() {
   for (int i = 0; i < 5; ++i) {
     auto heart =
         std::make_shared<CharacterHP>(GA_RESOURCE_DIR "/icon/blood_fill.png");
-    heart->SetPosition({320.0f + i * 50.0f, -250.0f}); // 每顆心間隔30px
+    heart->SetPosition({320.0f + i * 50.0f, -250.0f});
     heart->SetZIndex(25);
     m_Root.AddChild(heart);
     m_hearts.push_back(heart);
@@ -112,10 +116,22 @@ void PhaseSecond::Start() {
 };
 
 void PhaseSecond::Update() {
+  // mask
+  if (m_IsLevelMaskVisible) {
+    m_LevelMaskTimer++;
+
+    if (m_LevelMaskTimer >= 180) { // 假設60fps，3秒為180幀
+      m_Root.RemoveChild(m_LevelMask);
+      m_IsLevelMaskVisible = false;
+      m_levelTitle->SetVisible(true);
+    }
+    m_Root.Update();
+    return;
+  }
   // 移動背景
   for (auto background : m_Background) {
     auto pos = background->GetPosition();
-    background->SetPosition({pos.x, pos.y + 1});
+    background->SetPosition({pos.x, pos.y + 1.2});
   }
 
   // 背景循環邏輯
@@ -127,13 +143,13 @@ void PhaseSecond::Update() {
   // 樓梯移動
   for (auto stair : m_stairs) {
     auto pos = stair->getPosition();
-    stair->SetPosition({pos.x, pos.y + 1});
+    stair->SetPosition({pos.x, pos.y + 1.2});
   }
 
   // 點數向上移動
   for (auto point : m_points) {
     auto pos = point->GetPosition();
-    point->SetPosition({pos.x, pos.y + 1});
+    point->SetPosition({pos.x, pos.y + 1.2});
   }
 
   for (auto it = m_stairs.begin(); it != m_stairs.end();) {
@@ -172,16 +188,29 @@ void PhaseSecond::Update() {
     std::uniform_real_distribution<> dis(0, 1);
     std::uniform_int_distribution<> xPosDis(-115, 115);
 
-    if (dis(gen) < 0.6 && m_stairs.size() < 25) {
-      auto stair = std::make_shared<BasicStairs>(GA_RESOURCE_DIR
-                                                 "/stairs/general_stairs.png");
+    if (dis(gen) < 0.7) {
+
+      // 隨機生成樓梯
+      auto stairType =
+          (dis(gen) < 0.4) ? Stairs::StairType::SPIKE : Stairs::StairType::BASE;
+
+      if (stairType == Stairs::StairType::SPIKE) {
+        spikeCount++;
+      }
+
+      if (spikeCount > 2) {
+        stairType = Stairs::StairType::BASE;
+        spikeCount = 0;
+      }
+
+      auto stair = std::make_shared<Stairs>(stairType);
 
       stair->SetPosition({static_cast<float>(xPosDis(gen)),
                           -(m_Background[0]->GetSize().height / 2 + 50)});
       m_Root.AddChild(stair);
       m_stairs.push_back(stair);
 
-      if (dis(gen) < 0.4) {
+      if (dis(gen) < 0.3) {
         auto point =
             std::make_shared<PointSystem>(GA_RESOURCE_DIR "/icon/badge.png");
         glm::vec2 stairPos = stair->GetPosition();
@@ -202,7 +231,7 @@ void PhaseSecond::Update() {
   }
 
   // 地圖邊緣檢查
-  if (target.x > -186.000000 + 19 && target.x < 210.000000 - 19 &&
+  if (target.x > -210.000000 + 19 && target.x < 210.000000 - 19 &&
       target.y > -330.000000 && target.y < 330.000000) {
     m_boy->SetPosition(target);
   }
@@ -227,9 +256,8 @@ void PhaseSecond::Update() {
     m_IsGrounded = false;
   }
 
-  // 樓梯碰撞檢測
-  auto isOnStair = false;
-  std::shared_ptr<BasicStairs> currentStair = nullptr;
+  bool isOnStair = false;
+  std::shared_ptr<Stairs> currentStair = nullptr;
 
   for (size_t i = 0; i < m_stairs.size(); i++) {
     auto collisionResult = m_boy->IsCollidingWith(m_stairs[i]);
@@ -237,15 +265,33 @@ void PhaseSecond::Update() {
         collisionResult.side == Character::CollisionSide::Top) {
       isOnStair = true;
       currentStair = m_stairs[i];
+
+      if (currentStair && currentStair->GetType() == Stairs::StairType::SPIKE &&
+          currentStair != m_lastDamagingStair && !m_IsInvincible) {
+        if (m_lives > 0) {
+          --m_lives;
+          m_hearts[m_lives]->SetImage(GA_RESOURCE_DIR "/icon/blood_stroke.png");
+
+          m_lastDamagingStair = currentStair;
+
+          m_IsInvincible = true;
+          m_InvincibleFrame = m_InvincibleFrameDuration;
+        }
+      }
       break;
     }
+  }
+
+  if (currentStair != m_lastDamagingStair && !isOnStair) {
+    m_lastDamagingStair = nullptr;
   }
 
   if (isOnStair) {
     m_VerticalVelocity = 0.0f;
     m_IsGrounded = true;
     glm::vec2 charPos = m_boy->GetPosition();
-    m_boy->SetPosition({charPos.x, charPos.y + 1});
+    m_boy->SetPosition({charPos.x, charPos.y + 1.2});
+
   } else if (!m_IsGrounded) {
     m_boy->SetPosition({posX, posY});
   }
@@ -255,9 +301,35 @@ void PhaseSecond::Update() {
     LOG_DEBUG(pos);
   }
 
-  for (size_t i = 0; i < m_spikes.size(); i++) {
-    if (m_boy->IsCollidingWith(m_spikes[i]).isColliding) {
-      LOG_DEBUG("Collide with spike");
+  if (!m_IsInvincible) {
+    for (size_t i = 0; i < m_spikes.size(); i++) {
+      if (m_boy->IsCollidingWith(m_spikes[i]).isColliding) {
+
+        if (m_lives > 0) {
+          --m_lives;
+          m_hearts[m_lives]->SetImage(GA_RESOURCE_DIR "/icon/blood_stroke.png");
+
+          // 啟動無敵模式
+          m_IsInvincible = true;
+          m_InvincibleFrame = m_InvincibleFrameDuration;
+        }
+        break;
+      }
+    }
+  }
+
+  if (m_lives == 0) {
+    LOG_DEBUG("Player is dead");
+    NavigationTo(Enum::PhaseEnum::GameoverPage);
+  }
+
+  if (m_boy->IsCollidingWith(m_spikes[1]).isColliding) {
+    NavigationTo(Enum::PhaseEnum::GameoverPage);
+  }
+  if (m_IsInvincible) {
+    m_InvincibleFrame--;
+    if (m_InvincibleFrame <= 0) {
+      m_IsInvincible = false;
     }
   }
 

@@ -3,19 +3,19 @@
 
 #include "App.hpp"
 #include "Character.hpp"
-#include "component/BasicStairs.hpp"
 #include "component/CharacterHP.hpp"
 #include "component/EdgeSpikes.hpp"
+#include "component/Image.hpp"
 #include "component/LevelTitle.hpp"
 #include "component/PointSystem.hpp"
+#include "component/stairs.hpp"
 #include <memory>
 #include <vector>
-#include "component/Image.hpp"
 
 class Phase : public App {
 public:
   std::shared_ptr<Character> m_boy;
-  std::vector<std::shared_ptr<BasicStairs>> m_stairs;
+  std::vector<std::shared_ptr<Stairs>> m_stairs;
   std::shared_ptr<EdgeSpike> spike_up;
   std::shared_ptr<EdgeSpike> spike_down;
   std::vector<std::shared_ptr<EdgeSpike>> m_spikes;

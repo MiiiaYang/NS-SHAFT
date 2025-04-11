@@ -5,8 +5,8 @@
 #include "Enum.hpp"
 #include "Util/Input.hpp"
 #include "Util/Logger.hpp"
-#include "component/BasicStairs.hpp"
 #include "component/EdgeSpikes.hpp"
+#include "component/Stairs.hpp"
 #include <algorithm> //(for std::sample)
 #include <memory>
 #include <random>
@@ -16,8 +16,9 @@ void PhaseFirst::Start() {
   m_LevelMaskTimer = 0;
   m_IsLevelMaskVisible = true;
 
-  m_LevelMask = std::make_shared<Image>(GA_RESOURCE_DIR "/level_mask/level1_mask.png");
-  m_LevelMask->SetPosition({0.0f,0.0f});
+  m_LevelMask =
+      std::make_shared<Image>(GA_RESOURCE_DIR "/level_mask/level1_mask.png");
+  m_LevelMask->SetPosition({0.0f, 0.0f});
   m_LevelMask->SetZIndex(100);
   m_Root.AddChild(m_LevelMask);
 
@@ -40,8 +41,7 @@ void PhaseFirst::Start() {
   bool moveleft = true;
 
   for (int i = 0; i < stairCount; i++) {
-    auto stair = std::make_shared<BasicStairs>(GA_RESOURCE_DIR
-                                               "/stairs/general_stairs.png");
+    auto stair = std::make_shared<Stairs>(Stairs::StairType::BASE);
     stair->SetPosition(startPos);
 
     m_Root.AddChild(stair);
@@ -53,24 +53,22 @@ void PhaseFirst::Start() {
       startPos.x = 95.0f;
     }
 
-    if (i ==1)
-    {
-      m_boy->SetPosition(startPos +20.0f);
+    if (i == 1) {
+      m_boy->SetPosition(startPos + 20.0f);
       m_Root.AddChild(m_boy);
-
     }
     moveleft = !moveleft;
   }
 
   spike_up =
       std::make_shared<EdgeSpike>(GA_RESOURCE_DIR "/background/spikes_top.png");
-  spike_up->SetPosition({10.0f, 335.0f});
+  spike_up->SetPosition({10.0f, 345.0f});
   m_Root.AddChild(spike_up);
   m_spikes.push_back(spike_up);
 
   spike_down = std::make_shared<EdgeSpike>(GA_RESOURCE_DIR
                                            "/background/spikes_bottom.png");
-  spike_down->SetPosition({10.0f, -335.0f});
+  spike_down->SetPosition({10.0f, -345.0f});
   m_Root.AddChild(spike_down);
   m_spikes.push_back(spike_down);
 
@@ -87,7 +85,7 @@ void PhaseFirst::Start() {
   m_Root.AddChild(m_pointbag);
 
   int totalPoints = 5;
-  std::vector<std::shared_ptr<BasicStairs>> selectedStairs;
+  std::vector<std::shared_ptr<Stairs>> selectedStairs;
 
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -127,7 +125,7 @@ void PhaseFirst::Start() {
 };
 
 void PhaseFirst::Update() {
-  //mask
+  // mask
   if (m_IsLevelMaskVisible) {
     m_LevelMaskTimer++;
 
@@ -200,8 +198,7 @@ void PhaseFirst::Update() {
     std::uniform_int_distribution<> xPosDis(-115, 115);
 
     if (dis(gen) < 0.6 && m_stairs.size() < 25) {
-      auto stair = std::make_shared<BasicStairs>(GA_RESOURCE_DIR
-                                                 "/stairs/general_stairs.png");
+      auto stair = std::make_shared<Stairs>(Stairs::StairType::BASE);
 
       stair->SetPosition({static_cast<float>(xPosDis(gen)),
                           -(m_Background[0]->GetSize().height / 2 + 50)});
@@ -229,7 +226,7 @@ void PhaseFirst::Update() {
   }
 
   // 地圖邊緣檢查
-  if (target.x > -186.000000 + 19 && target.x < 210.000000 - 19 &&
+  if (target.x > -210.000000 + 19 && target.x < 210.000000 - 19 &&
       target.y > -330.000000 && target.y < 330.000000) {
     m_boy->SetPosition(target);
   }
@@ -256,7 +253,7 @@ void PhaseFirst::Update() {
 
   // 樓梯碰撞檢測
   auto isOnStair = false;
-  std::shared_ptr<BasicStairs> currentStair = nullptr;
+  std::shared_ptr<Stairs> currentStair = nullptr;
 
   for (size_t i = 0; i < m_stairs.size(); i++) {
     auto collisionResult = m_boy->IsCollidingWith(m_stairs[i]);
@@ -327,7 +324,6 @@ void PhaseFirst::Update() {
   if (m_pointbag->GetPointCount() >= 10) {
     NavigationTo(Enum::PhaseEnum::PhaseSecond);
   }
-
 
   m_Root.Update();
 };
