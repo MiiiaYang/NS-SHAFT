@@ -122,7 +122,7 @@ void PhaseSecond::Start() {
 };
 
 void PhaseSecond::Update() {
-  // mask
+  //mask
   if (m_IsLevelMaskVisible) {
     m_LevelMaskTimer++;
 
@@ -134,6 +134,7 @@ void PhaseSecond::Update() {
     m_Root.Update();
     return;
   }
+
   // 移動背景
   for (auto background : m_Background) {
     auto pos = background->GetPosition();
