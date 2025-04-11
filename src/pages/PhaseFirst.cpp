@@ -103,6 +103,10 @@ void PhaseFirst::Start() {
     m_hearts.push_back(heart);
   }
 
+  m_lives=5;
+  m_IsInvincible = false;
+  m_InvincibleFrame = 0;
+
   m_CurrentState = State::UPDATE;
 };
 
@@ -265,14 +269,17 @@ void PhaseFirst::Update() {
 
           if (m_lives == 0) {
             LOG_DEBUG("Player is dead");
-            // TODO: 加入死亡處理
+            NavigationTo(Enum::PhaseEnum::GameoverPage);
           }
         }
         break;
       }
     }
   }
-
+  if (m_boy->IsCollidingWith(m_spikes[1]).isColliding)
+  {
+    NavigationTo(Enum::PhaseEnum::GameoverPage);
+  }
   if (m_IsInvincible) {
     m_InvincibleFrame--;
     if (m_InvincibleFrame <= 0) {
@@ -280,11 +287,7 @@ void PhaseFirst::Update() {
     }
   }
 
-  for (size_t i = 0; i < m_spikes.size(); i++) {
-    if (m_boy->IsCollidingWith(m_spikes[i]).isColliding) {
-      NavigationTo(Enum::PhaseEnum::GameoverPage);
-    }
-  }
+
 
 
    // 檢查角色是否碰到點數
@@ -328,6 +331,10 @@ void PhaseFirst::End() {
     m_Root.RemoveChild(bg);
   }
   m_Background.clear();
-
+  m_Root.RemoveChild(m_hpBar);
+  for (auto heart : m_hearts) {
+    m_Root.RemoveChild(heart);
+  }
+  m_hearts.clear();
   m_CurrentState = App::State::START;
 };
