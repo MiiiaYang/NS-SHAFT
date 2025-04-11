@@ -331,6 +331,10 @@ void PhaseFirst::End() {
     m_Root.RemoveChild(bg);
   }
   m_Background.clear();
-
+  m_Root.RemoveChild(m_hpBar);
+  for (auto heart : m_hearts) {
+    m_Root.RemoveChild(heart);
+  }
+  m_hearts.clear();
   m_CurrentState = App::State::START;
 };
