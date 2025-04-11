@@ -16,8 +16,9 @@ void PhaseFirst::Start() {
   m_LevelMaskTimer = 0;
   m_IsLevelMaskVisible = true;
 
-  m_LevelMask = std::make_shared<Image>(GA_RESOURCE_DIR "/level_mask/level1_mask.png");
-  m_LevelMask->SetPosition({0.0f,0.0f});
+  m_LevelMask =
+      std::make_shared<Image>(GA_RESOURCE_DIR "/level_mask/level1_mask.png");
+  m_LevelMask->SetPosition({0.0f, 0.0f});
   m_LevelMask->SetZIndex(100);
   m_Root.AddChild(m_LevelMask);
 
@@ -53,24 +54,22 @@ void PhaseFirst::Start() {
       startPos.x = 95.0f;
     }
 
-    if (i ==1)
-    {
-      m_boy->SetPosition(startPos +20.0f);
+    if (i == 1) {
+      m_boy->SetPosition(startPos + 20.0f);
       m_Root.AddChild(m_boy);
-
     }
     moveleft = !moveleft;
   }
 
   spike_up =
       std::make_shared<EdgeSpike>(GA_RESOURCE_DIR "/background/spikes_top.png");
-  spike_up->SetPosition({10.0f, 335.0f});
+  spike_up->SetPosition({10.0f, 345.0f});
   m_Root.AddChild(spike_up);
   m_spikes.push_back(spike_up);
 
   spike_down = std::make_shared<EdgeSpike>(GA_RESOURCE_DIR
                                            "/background/spikes_bottom.png");
-  spike_down->SetPosition({10.0f, -335.0f});
+  spike_down->SetPosition({10.0f, -345.0f});
   m_Root.AddChild(spike_down);
   m_spikes.push_back(spike_down);
 
@@ -127,7 +126,7 @@ void PhaseFirst::Start() {
 };
 
 void PhaseFirst::Update() {
-  //mask
+  // mask
   if (m_IsLevelMaskVisible) {
     m_LevelMaskTimer++;
 
@@ -327,7 +326,6 @@ void PhaseFirst::Update() {
   if (m_pointbag->GetPointCount() >= 10) {
     NavigationTo(Enum::PhaseEnum::PhaseSecond);
   }
-
 
   m_Root.Update();
 };
