@@ -29,6 +29,7 @@ public:
   void SetImage(const std::string &ImagePath) {
     m_ImagePath = ImagePath;
     m_Drawable = std::make_shared<Util::Image>(m_ImagePath);
+
   }
   void SetPosition(const glm::vec2 &Position) {
     m_Transform.translation = Position;
