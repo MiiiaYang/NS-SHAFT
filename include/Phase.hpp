@@ -10,6 +10,7 @@
 #include "component/PointSystem.hpp"
 #include <memory>
 #include <vector>
+#include "component/Image.hpp"
 
 class Phase : public App {
 public:
@@ -24,6 +25,10 @@ public:
   std::vector<std::shared_ptr<BackgroundImage>> m_Background;
   std::shared_ptr<CharacterHP> m_hpBar;
   std::vector<std::shared_ptr<CharacterHP>> m_hearts;
+  std::shared_ptr<Image> m_LevelMask;
+
+  int m_LevelMaskTimer = 0;
+  bool m_IsLevelMaskVisible = true;
 
   int m_lives = 5;
   bool m_IsInvincible = false;

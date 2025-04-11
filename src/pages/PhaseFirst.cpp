@@ -13,6 +13,14 @@
 #include <vector>
 
 void PhaseFirst::Start() {
+  m_LevelMaskTimer = 0;
+  m_IsLevelMaskVisible = true;
+
+  m_LevelMask = std::make_shared<Image>(GA_RESOURCE_DIR "/level_mask/level1_mask.png");
+  m_LevelMask->SetPosition({0.0f,0.0f});
+  m_LevelMask->SetZIndex(100);
+  m_Root.AddChild(m_LevelMask);
+
   m_Background.push_back(std::make_shared<BackgroundImage>(
       "/background/background.png", glm::vec2(0, 0)));
   m_Background.push_back(std::make_shared<BackgroundImage>(
@@ -24,13 +32,11 @@ void PhaseFirst::Start() {
   }
 
   m_boy = std::make_shared<Character>(GA_RESOURCE_DIR "/character/kid.png");
-  m_boy->SetPosition({86.0f, 300.0f});
   m_boy->SetZIndex(50);
   m_boy->SetScale({0.5f, 0.5f});
-  m_Root.AddChild(m_boy);
 
   glm::vec2 startPos = glm::vec2(95.0f, 240.0f);
-  int stairCount = 8;
+  int stairCount = 10;
   bool moveleft = true;
 
   for (int i = 0; i < stairCount; i++) {
@@ -45,6 +51,13 @@ void PhaseFirst::Start() {
       startPos.x = -95.0f;
     } else {
       startPos.x = 95.0f;
+    }
+
+    if (i ==1)
+    {
+      m_boy->SetPosition(startPos +20.0f);
+      m_Root.AddChild(m_boy);
+
     }
     moveleft = !moveleft;
   }
@@ -65,6 +78,7 @@ void PhaseFirst::Start() {
                                               "/level_title/level1_title.png");
   m_levelTitle->SetPosition({-470.0f, 260.0f});
   m_Root.AddChild(m_levelTitle);
+  m_levelTitle->SetVisible(false);
 
   m_pointbag = std::make_shared<PointSystem>(GA_RESOURCE_DIR
                                              "/background/achievement_bag.png");
@@ -113,6 +127,18 @@ void PhaseFirst::Start() {
 };
 
 void PhaseFirst::Update() {
+  //mask
+  if (m_IsLevelMaskVisible) {
+    m_LevelMaskTimer++;
+
+    if (m_LevelMaskTimer >= 180) { // 假設60fps，3秒為180幀
+      m_Root.RemoveChild(m_LevelMask);
+      m_IsLevelMaskVisible = false;
+      m_levelTitle->SetVisible(true);
+    }
+    m_Root.Update();
+    return;
+  }
   // 移動背景
   for (auto background : m_Background) {
     auto pos = background->GetPosition();
@@ -301,6 +327,7 @@ void PhaseFirst::Update() {
   if (m_pointbag->GetPointCount() >= 10) {
     NavigationTo(Enum::PhaseEnum::PhaseSecond);
   }
+
 
   m_Root.Update();
 };
