@@ -90,20 +90,22 @@ void PhaseFirst::Start() {
     m_points.push_back(point);
   }
 
-  m_hpBar = std::make_shared<CharacterHP>(GA_RESOURCE_DIR "/background/blood_background.png");
+  m_hpBar = std::make_shared<CharacterHP>(GA_RESOURCE_DIR
+                                          "/background/blood_background.png");
   m_hpBar->SetPosition({420.0f, -250.0f});
   m_hpBar->SetZIndex(20);
   m_Root.AddChild(m_hpBar);
 
   for (int i = 0; i < 5; ++i) {
-    auto heart = std::make_shared<CharacterHP>(GA_RESOURCE_DIR "/icon/blood_fill.png");
+    auto heart =
+        std::make_shared<CharacterHP>(GA_RESOURCE_DIR "/icon/blood_fill.png");
     heart->SetPosition({320.0f + i * 50.0f, -250.0f}); // 每顆心間隔30px
     heart->SetZIndex(25);
     m_Root.AddChild(heart);
     m_hearts.push_back(heart);
   }
 
-  m_lives=5;
+  m_lives = 5;
   m_IsInvincible = false;
   m_InvincibleFrame = 0;
 
@@ -276,8 +278,7 @@ void PhaseFirst::Update() {
       }
     }
   }
-  if (m_boy->IsCollidingWith(m_spikes[1]).isColliding)
-  {
+  if (m_boy->IsCollidingWith(m_spikes[1]).isColliding) {
     NavigationTo(Enum::PhaseEnum::GameoverPage);
   }
   if (m_IsInvincible) {
@@ -287,15 +288,12 @@ void PhaseFirst::Update() {
     }
   }
 
-
-
-
-   // 檢查角色是否碰到點數
+  // 檢查角色是否碰到點數
   for (auto it = m_points.begin(); it != m_points.end();) {
     if (m_boy->IsCollidingWith(*it).isColliding) {
       m_pointbag->AddPoint();
       m_Root.RemoveChild(*it);
-      it = m_points.erase(it); 
+      it = m_points.erase(it);
     } else {
       ++it;
     }

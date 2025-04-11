@@ -6,7 +6,6 @@
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
 #include <functional>
-#include <iostream>
 #include <memory>
 #include <string>
 #include <vector>

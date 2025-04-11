@@ -12,8 +12,6 @@
 #include <vector>
 
 void PhaseSecond::Start() {
-  // std::vector<std::shared_ptr<BackgroundImage>> m_Background;
-
   m_Background.push_back(std::make_shared<BackgroundImage>(
       "/background/background.png", glm::vec2(0, 0)));
   m_Background.push_back(std::make_shared<BackgroundImage>(
@@ -63,7 +61,7 @@ void PhaseSecond::Start() {
   m_spikes.push_back(spike_down);
 
   m_levelTitle = std::make_shared<LevelTitle>(GA_RESOURCE_DIR
-                                              "/level_title/level2_title.png");
+                                              "/level_title/level1_title.png");
   m_levelTitle->SetPosition({-470.0f, 260.0f});
   m_Root.AddChild(m_levelTitle);
 
@@ -90,6 +88,26 @@ void PhaseSecond::Start() {
     m_Root.AddChild(point);
     m_points.push_back(point);
   }
+
+  m_hpBar = std::make_shared<CharacterHP>(GA_RESOURCE_DIR
+                                          "/background/blood_background.png");
+  m_hpBar->SetPosition({420.0f, -250.0f});
+  m_hpBar->SetZIndex(20);
+  m_Root.AddChild(m_hpBar);
+
+  for (int i = 0; i < 5; ++i) {
+    auto heart =
+        std::make_shared<CharacterHP>(GA_RESOURCE_DIR "/icon/blood_fill.png");
+    heart->SetPosition({320.0f + i * 50.0f, -250.0f}); // 每顆心間隔30px
+    heart->SetZIndex(25);
+    m_Root.AddChild(heart);
+    m_hearts.push_back(heart);
+  }
+
+  m_lives = 5;
+  m_IsInvincible = false;
+  m_InvincibleFrame = 0;
+
   m_CurrentState = State::UPDATE;
 };
 
