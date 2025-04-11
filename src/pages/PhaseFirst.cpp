@@ -1,4 +1,5 @@
 #include "pages/PhaseFirst.hpp"
+#include "App.hpp"
 #include "BackgroundImage.hpp"
 #include "Character.hpp"
 #include "Enum.hpp"
@@ -12,8 +13,6 @@
 #include <vector>
 
 void PhaseFirst::Start() {
-  // std::vector<std::shared_ptr<BackgroundImage>> m_Background;
-
   m_Background.push_back(std::make_shared<BackgroundImage>(
       "/background/background.png", glm::vec2(0, 0)));
   m_Background.push_back(std::make_shared<BackgroundImage>(
@@ -239,20 +238,15 @@ void PhaseFirst::Update() {
 
   for (size_t i = 0; i < m_spikes.size(); i++) {
     if (m_boy->IsCollidingWith(m_spikes[i]).isColliding) {
-      LOG_DEBUG("Collide with spike");
+      NavigationTo(Enum::PhaseEnum::GameoverPage);
     }
   }
 
-  // 檢查角色是否碰到點數
   for (auto it = m_points.begin(); it != m_points.end();) {
     if (m_boy->IsCollidingWith(*it).isColliding) {
-      // 更新背包
       m_pointbag->AddPoint();
-      // 確保點數完全移除
       m_Root.RemoveChild(*it);
-      it = m_points.erase(it); // 從列表中刪除
-      LOG_DEBUG("Collide with Point");
-
+      it = m_points.erase(it); 
     } else {
       ++it;
     }
@@ -265,5 +259,29 @@ void PhaseFirst::Update() {
 };
 
 void PhaseFirst::End() {
-  // Implementation here
+  phase = Enum::PhaseEnum::PhaseFirst;
+
+  m_Root.RemoveChild(m_boy);
+  for (auto stair : m_stairs) {
+    m_Root.RemoveChild(stair);
+  }
+  m_stairs.clear();
+  m_Root.RemoveChild(spike_up);
+  m_Root.RemoveChild(spike_down);
+  for (auto spike : m_spikes) {
+    m_Root.RemoveChild(spike);
+  }
+  m_spikes.clear();
+  m_Root.RemoveChild(m_levelTitle);
+  m_Root.RemoveChild(m_pointbag);
+  for (auto point : m_points) {
+    m_Root.RemoveChild(point);
+  }
+  m_points.clear();
+  for (auto bg : m_Background) {
+    m_Root.RemoveChild(bg);
+  }
+  m_Background.clear();
+
+  m_CurrentState = App::State::START;
 };

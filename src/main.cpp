@@ -2,6 +2,7 @@
 #include "Core/Context.hpp"
 #include "Enum.hpp"
 #include "Util/Input.hpp"
+#include "pages/GameoverPage.hpp"
 #include "pages/HomePage.hpp"
 #include "pages/PhaseFirst.hpp"
 #include "pages/PhaseSecond.hpp"
@@ -19,6 +20,7 @@ int main(int, char **) {
   phases.push_back(std::make_shared<UnlimitPage>(UnlimitPage()));
   phases.push_back(std::make_shared<PhaseFirst>(PhaseFirst()));
   phases.push_back(std::make_shared<PhaseSecond>(PhaseSecond()));
+  phases.push_back(std::make_shared<GameoverPage>(GameoverPage()));
 
   while (!context->GetExit()) {
     auto &phase = phases[static_cast<size_t>(currentPhase)];
@@ -30,8 +32,8 @@ int main(int, char **) {
 
     if (phase && (phase->GetPhase() != currentPhase)) {
       currentPhase = phase->GetPhase();
-      continue;
     }
+
     switch (phase->GetCurrentState()) {
     case App::State::START:
       phase->Start();
@@ -43,7 +45,6 @@ int main(int, char **) {
 
     case App::State::END:
       phase->End();
-      context->SetExit(true);
       break;
     }
     context->Update();

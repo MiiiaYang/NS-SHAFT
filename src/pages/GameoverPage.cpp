@@ -1,24 +1,26 @@
-#include "pages/HomePage.hpp"
+#include "pages/GameoverPage.hpp"
 #include "BackgroundImage.hpp"
+#include "Enum.hpp"
 #include "Util/Input.hpp"
 #include "Util/Keycode.hpp"
 #include "component/ButtonImage.hpp"
 
-void HomePage::Start() {
+void GameoverPage::Start() {
+  ButtonImage::ResetSelection();
   m_Background = std::make_shared<BackgroundImage>();
-  m_Background->SetBackground("/background/menu_bg.png");
+  m_Background->SetBackground("/background/gameover_bg.png");
   m_Root.AddChild(m_Background);
 
-  m_Button1 = std::make_shared<ButtonImage>("/menu/unlimit_button.png",
-                                            "/menu/unlimit_button_hover.png",
-                                            -250, -250, 100, 22);
+  m_Button1 = std::make_shared<ButtonImage>("/menu/exit_button.png",
+                                            "/menu/exit_button_hover.png", -250,
+                                            -250, 100, 22);
   m_Button1->SetPosition({-250, -250});
-  m_Button1->SetNavigationCallback(Enum::PhaseEnum::UnlimitPage);
+  m_Button1->SetNavigationCallback(Enum::PhaseEnum::HomePage);
   m_Root.AddChild(m_Button1);
 
-  m_Button2 = std::make_shared<ButtonImage>("/menu/level_button.png",
-                                            "/menu/level_button_hover.png", 250,
-                                            -250, 100, 22);
+  m_Button2 = std::make_shared<ButtonImage>("/menu/Restart_button.png",
+                                            "/menu/Restart_button_hover.png",
+                                            250, -250, 100, 22);
   m_Button2->SetPosition({250, -250});
   m_Button2->SetNavigationCallback(Enum::PhaseEnum::PhaseFirst);
   m_Root.AddChild(m_Button2);
@@ -28,7 +30,7 @@ void HomePage::Start() {
   m_CurrentState = State::UPDATE;
 }
 
-void HomePage::Update() {
+void GameoverPage::Update() {
 
   std::vector<ButtonImage *> buttons = {m_Button1.get(), m_Button2.get()};
   ButtonImage::UpdateButtonNavigation(buttons);
@@ -41,8 +43,8 @@ void HomePage::Update() {
   m_Root.Update();
 }
 
-void HomePage::End() {
-  phase = Enum::PhaseEnum::HomePage;
+void GameoverPage::End() {
+  phase = Enum::PhaseEnum::GameoverPage;
 
   m_Root.RemoveChild(m_Background);
   m_Root.RemoveChild(m_Button1);
