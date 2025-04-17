@@ -357,5 +357,6 @@ void PhaseFirst::End() {
     m_Root.RemoveChild(heart);
   }
   m_hearts.clear();
+  m_Root.RemoveChild(m_LevelMask);
   m_CurrentState = App::State::START;
 };
