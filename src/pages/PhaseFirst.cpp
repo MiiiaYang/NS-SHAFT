@@ -27,6 +27,9 @@ void PhaseFirst::Start() {
   m_Background.push_back(std::make_shared<BackgroundImage>(
       "/background/background.png",
       glm::vec2(0, -m_Background[0]->GetSize().height)));
+  m_Background.push_back(std::make_shared<BackgroundImage>(
+      "/background/background.png",
+      glm::vec2(0, -2 * m_Background[0]->GetSize().height)));
 
   for (auto background : m_Background) {
     m_Root.AddChild(background);
@@ -37,13 +40,13 @@ void PhaseFirst::Start() {
   m_boy->SetScale({0.5f, 0.5f});
 
   glm::vec2 startPos = glm::vec2(95.0f, 240.0f);
-  int stairCount = 10;
+  int stairCount = 9;
   bool moveleft = true;
 
   for (int i = 0; i < stairCount; i++) {
     auto stair = std::make_shared<Stairs>(Stairs::StairType::BASE);
     stair->SetPosition(startPos);
-
+    stair->SetZIndex(40);
     m_Root.AddChild(stair);
     m_stairs.push_back(stair);
     startPos.y -= 70.0f;
@@ -63,12 +66,14 @@ void PhaseFirst::Start() {
   spike_up =
       std::make_shared<EdgeSpike>(GA_RESOURCE_DIR "/background/spikes_top.png");
   spike_up->SetPosition({10.0f, 345.0f});
+  spike_up->SetZIndex(60);
   m_Root.AddChild(spike_up);
   m_spikes.push_back(spike_up);
 
   spike_down = std::make_shared<EdgeSpike>(GA_RESOURCE_DIR
                                            "/background/spikes_bottom.png");
   spike_down->SetPosition({10.0f, -345.0f});
+  spike_down->SetZIndex(60);
   m_Root.AddChild(spike_down);
   m_spikes.push_back(spike_down);
 
@@ -98,6 +103,7 @@ void PhaseFirst::Start() {
     glm::vec2 stairPos = stair->GetPosition(); // 取得樓梯位置
 
     point->SetPosition({stairPos.x, stairPos.y + 20});
+    point->SetZIndex(50);
     m_Root.AddChild(point);
     m_points.push_back(point);
   }
@@ -145,8 +151,9 @@ void PhaseFirst::Update() {
 
   // 背景循環邏輯
   if (m_Background[0]->GetPosition().y >= m_Background[0]->GetSize().height) {
-    m_Background[0]->SetPosition({0, -m_Background[1]->GetSize().height});
-    std::swap(m_Background[0], m_Background[1]);
+    m_Background[0]->SetPosition({0, 2 * -m_Background[1]->GetSize().height});
+    std::rotate(m_Background.begin(), m_Background.begin() + 1,
+                m_Background.end());
   }
 
   // 樓梯移動
@@ -197,7 +204,7 @@ void PhaseFirst::Update() {
     std::uniform_real_distribution<> dis(0, 1);
     std::uniform_int_distribution<> xPosDis(-115, 115);
 
-    if (dis(gen) < 0.6 && m_stairs.size() < 25) {
+    if (dis(gen) < 0.6) {
       auto stair = std::make_shared<Stairs>(Stairs::StairType::BASE);
 
       stair->SetPosition({static_cast<float>(xPosDis(gen)),
@@ -227,7 +234,7 @@ void PhaseFirst::Update() {
 
   // 地圖邊緣檢查
   if (target.x > -210.000000 + 19 && target.x < 210.000000 - 19 &&
-      target.y > -330.000000 && target.y < 330.000000) {
+      target.y > -330.000000) {
     m_boy->SetPosition(target);
   }
 

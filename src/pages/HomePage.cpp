@@ -5,6 +5,7 @@
 #include "component/ButtonImage.hpp"
 
 void HomePage::Start() {
+  m_initialTimer = 0;
   m_Background = std::make_shared<BackgroundImage>();
   m_Background->SetBackground("/background/menu_bg.png");
   m_Root.AddChild(m_Background);
@@ -29,11 +30,15 @@ void HomePage::Start() {
 }
 
 void HomePage::Update() {
+  if (m_initialTimer<=12)
+  {
+    m_initialTimer++;
+  }
 
   std::vector<ButtonImage *> buttons = {m_Button1.get(), m_Button2.get()};
   ButtonImage::UpdateButtonNavigation(buttons);
 
-  if (Util::Input::IsKeyPressed(Util::Keycode::RETURN)) {
+  if (Util::Input::IsKeyPressed(Util::Keycode::RETURN)&& m_initialTimer>=12) {
     Enum::PhaseEnum selectedPage = ButtonImage::GetSelectedDestination();
     NavigationTo(selectedPage);
   }

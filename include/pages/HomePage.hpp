@@ -8,6 +8,7 @@ class HomePage : public App {
 public:
   std::shared_ptr<ButtonImage> m_Button1;
   std::shared_ptr<ButtonImage> m_Button2;
+  int m_initialTimer = 0;
 
   explicit HomePage() { phase = Enum::PhaseEnum::HomePage; }
 
