@@ -131,6 +131,7 @@ void PhaseFirst::Start() {
 };
 
 void PhaseFirst::Update() {
+  m_boy->SetImage(GA_RESOURCE_DIR "/character/kid.png");
   // mask
   if (m_IsLevelMaskVisible) {
     m_LevelMaskTimer++;
@@ -225,10 +226,27 @@ void PhaseFirst::Update() {
 
   glm::vec2 target = m_boy->GetPosition();
   if (Util::Input::IsKeyPressed(Util::Keycode::A)) {
+    if ((frameCounter/5)%2==0)
+    {
+      m_boy->SetImage(GA_RESOURCE_DIR "/character/kid_left.png");
+    }
+    else
+    {
+      m_boy->SetImage(GA_RESOURCE_DIR "/character/kid_leftgo.png");
+
+    }
     target = {target.x - 5, target.y};
   }
 
   if (Util::Input::IsKeyPressed(Util::Keycode::D)) {
+    if ((frameCounter/5)%2==0)
+    {
+      m_boy->SetImage(GA_RESOURCE_DIR "/character/kid_right.png");
+    }
+    else
+    {
+      m_boy->SetImage(GA_RESOURCE_DIR "/character/kid_rightgo.png");
+    }
     target = {target.x + 5, target.y};
   }
 
