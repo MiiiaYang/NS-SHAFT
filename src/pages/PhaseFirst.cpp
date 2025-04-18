@@ -43,7 +43,7 @@ void PhaseFirst::Start() {
   for (int i = 0; i < stairCount; i++) {
     auto stair = std::make_shared<Stairs>(Stairs::StairType::BASE);
     stair->SetPosition(startPos);
-
+    stair->SetZIndex(40);
     m_Root.AddChild(stair);
     m_stairs.push_back(stair);
     startPos.y -= 70.0f;
@@ -63,12 +63,14 @@ void PhaseFirst::Start() {
   spike_up =
       std::make_shared<EdgeSpike>(GA_RESOURCE_DIR "/background/spikes_top.png");
   spike_up->SetPosition({10.0f, 345.0f});
+  spike_up->SetZIndex(60);
   m_Root.AddChild(spike_up);
   m_spikes.push_back(spike_up);
 
   spike_down = std::make_shared<EdgeSpike>(GA_RESOURCE_DIR
                                            "/background/spikes_bottom.png");
   spike_down->SetPosition({10.0f, -345.0f});
+  spike_down->SetZIndex(60);
   m_Root.AddChild(spike_down);
   m_spikes.push_back(spike_down);
 
@@ -98,6 +100,7 @@ void PhaseFirst::Start() {
     glm::vec2 stairPos = stair->GetPosition(); // 取得樓梯位置
 
     point->SetPosition({stairPos.x, stairPos.y + 20});
+    point->SetZIndex(50);
     m_Root.AddChild(point);
     m_points.push_back(point);
   }

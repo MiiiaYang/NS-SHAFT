@@ -37,7 +37,7 @@ public:
   void SetScale(const glm::vec2 &scale) { m_Transform.scale = scale; }
   glm::vec2 getPosition() const { return m_Transform.translation; }
   StairType GetType() const { return m_Type; }
-
+  void SetZIndex(float index) { m_ZIndex = index; }
   [[nodiscard]] const glm::vec2 &GetPosition() const {
     return m_Transform.translation;
   }

@@ -21,6 +21,7 @@ public:
     m_Transform.translation = Position;
   }
   void SetScale(const glm::vec2 &scale) { m_Transform.scale = scale; }
+  void SetZIndex(float index) { m_ZIndex = index; }
 
   glm::vec2 GetPosition() const { return m_Transform.translation; }
 
