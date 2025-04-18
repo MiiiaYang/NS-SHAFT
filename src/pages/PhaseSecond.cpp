@@ -366,7 +366,7 @@ void PhaseSecond::Update() {
 };
 
 void PhaseSecond::End() {
-  phase = Enum::PhaseEnum::PhaseFirst;
+  phase = Enum::PhaseEnum::PhaseSecond;
 
   m_Root.RemoveChild(m_boy);
   for (auto stair : m_stairs) {
