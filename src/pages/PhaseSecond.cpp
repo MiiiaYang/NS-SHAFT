@@ -246,7 +246,7 @@ void PhaseSecond::Update() {
 
   // 地圖邊緣檢查
   if (target.x > -210.000000 + 19 && target.x < 210.000000 - 19 &&
-      target.y > -330.000000 && target.y < 330.000000) {
+      target.y > -330.000000) {
     m_boy->SetPosition(target);
   }
 
