@@ -40,7 +40,7 @@ void PhaseFirst::Start() {
   m_boy->SetScale({0.5f, 0.5f});
 
   glm::vec2 startPos = glm::vec2(95.0f, 240.0f);
-  int stairCount = 10;
+  int stairCount = 9;
   bool moveleft = true;
 
   for (int i = 0; i < stairCount; i++) {
@@ -204,7 +204,7 @@ void PhaseFirst::Update() {
     std::uniform_real_distribution<> dis(0, 1);
     std::uniform_int_distribution<> xPosDis(-115, 115);
 
-    if (dis(gen) < 0.6 && m_stairs.size() < 25) {
+    if (dis(gen) < 0.6) {
       auto stair = std::make_shared<Stairs>(Stairs::StairType::BASE);
 
       stair->SetPosition({static_cast<float>(xPosDis(gen)),
