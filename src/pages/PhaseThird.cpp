@@ -1,23 +1,22 @@
-#include "pages/PhaseSecond.hpp"
+#include "pages/PhaseThird.hpp"
 #include "BackgroundImage.hpp"
 #include "Character.hpp"
 #include "Util/Input.hpp"
 #include "Util/Logger.hpp"
 #include "component/EdgeSpikes.hpp"
 #include "component/Stairs.hpp"
-#include "component/stairs.hpp"
 
 #include <algorithm> //(for std::sample)
 #include <memory>
 #include <random>
 #include <vector>
 
-void PhaseSecond::Start() {
+void PhaseThird::Start() {
   m_LevelMaskTimer = 0;
   m_IsLevelMaskVisible = true;
 
   m_LevelMask =
-      std::make_shared<Image>(GA_RESOURCE_DIR "/level_mask/level2_mask.png");
+      std::make_shared<Image>(GA_RESOURCE_DIR "/level_mask/level3_mask.png");
   m_LevelMask->SetPosition({0.0f, 0.0f});
   m_LevelMask->SetZIndex(100);
   m_Root.AddChild(m_LevelMask);
@@ -70,7 +69,6 @@ void PhaseSecond::Start() {
       auto point =
           std::make_shared<PointSystem>(GA_RESOURCE_DIR "/icon/badge.png");
       point->SetPosition({xPos, yPos + 20});
-      point->SetZIndex(50);
       m_Root.AddChild(point);
       m_points.push_back(point);
     }
@@ -97,7 +95,7 @@ void PhaseSecond::Start() {
   m_spikes.push_back(spike_down);
 
   m_levelTitle = std::make_shared<LevelTitle>(GA_RESOURCE_DIR
-                                              "/level_title/level2_title.png");
+                                              "/level_title/level3_title.png");
   m_levelTitle->SetPosition({-470.0f, 260.0f});
   m_Root.AddChild(m_levelTitle);
 
@@ -129,7 +127,7 @@ void PhaseSecond::Start() {
   m_CurrentState = State::UPDATE;
 };
 
-void PhaseSecond::Update() {
+void PhaseThird::Update() {
   m_boy->SetImage(GA_RESOURCE_DIR "/character/kid.png");
 
   // mask
@@ -385,14 +383,12 @@ void PhaseSecond::Update() {
       ++it;
     }
   }
-  if (m_pointbag->GetPointCount() >= 10) {
-    NavigationTo(Enum::PhaseEnum::PhaseThird);
-  }
+
   m_Root.Update();
 };
 
-void PhaseSecond::End() {
-  phase = Enum::PhaseEnum::PhaseSecond;
+void PhaseThird::End() {
+  phase = Enum::PhaseEnum::PhaseThird;
 
   m_Root.RemoveChild(m_boy);
   for (auto stair : m_stairs) {

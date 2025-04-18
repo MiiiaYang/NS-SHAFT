@@ -7,6 +7,7 @@
 #include "pages/PhaseFirst.hpp"
 #include "pages/PhaseSecond.hpp"
 #include "pages/UnlimitPage.hpp"
+#include "pages/PhaseThird.hpp"
 #include <memory>
 #include <vector>
 
@@ -21,7 +22,7 @@ int main(int, char **) {
   phases.push_back(std::make_shared<PhaseFirst>(PhaseFirst()));
   phases.push_back(std::make_shared<PhaseSecond>(PhaseSecond()));
   phases.push_back(std::make_shared<GameoverPage>(GameoverPage()));
-
+  phases.push_back(std::make_shared<PhaseThird>(PhaseThird()));
   while (!context->GetExit()) {
     auto &phase = phases[static_cast<size_t>(currentPhase)];
 
