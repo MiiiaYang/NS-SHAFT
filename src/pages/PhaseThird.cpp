@@ -1,23 +1,22 @@
-#include "pages/PhaseSecond.hpp"
+#include "pages/PhaseThird.hpp"
 #include "BackgroundImage.hpp"
 #include "Character.hpp"
 #include "Util/Input.hpp"
 #include "Util/Logger.hpp"
 #include "component/EdgeSpikes.hpp"
 #include "component/Stairs.hpp"
-#include "component/stairs.hpp"
 
 #include <algorithm> //(for std::sample)
 #include <memory>
 #include <random>
 #include <vector>
 
-void PhaseSecond::Start() {
+void PhaseThird::Start() {
   m_LevelMaskTimer = 0;
   m_IsLevelMaskVisible = true;
 
   m_LevelMask =
-      std::make_shared<Image>(GA_RESOURCE_DIR "/level_mask/level2_mask.png");
+      std::make_shared<Image>(GA_RESOURCE_DIR "/level_mask/level3_mask.png");
   m_LevelMask->SetPosition({0.0f, 0.0f});
   m_LevelMask->SetZIndex(100);
   m_Root.AddChild(m_LevelMask);
@@ -55,6 +54,7 @@ void PhaseSecond::Start() {
     float yPos = startY - i * yStep;
 
     stair->SetPosition({xPos, yPos});
+    stair->SetZIndex(40);
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<float> scaleDis(
@@ -83,17 +83,19 @@ void PhaseSecond::Start() {
   spike_up =
       std::make_shared<EdgeSpike>(GA_RESOURCE_DIR "/background/spikes_top.png");
   spike_up->SetPosition({10.0f, 345.0f});
+  spike_up->SetZIndex(60);
   m_Root.AddChild(spike_up);
   m_spikes.push_back(spike_up);
 
   spike_down = std::make_shared<EdgeSpike>(GA_RESOURCE_DIR
                                            "/background/spikes_bottom.png");
   spike_down->SetPosition({10.0f, -345.0f});
+  spike_down->SetZIndex(60);
   m_Root.AddChild(spike_down);
   m_spikes.push_back(spike_down);
 
   m_levelTitle = std::make_shared<LevelTitle>(GA_RESOURCE_DIR
-                                              "/level_title/level2_title.png");
+                                              "/level_title/level3_title.png");
   m_levelTitle->SetPosition({-470.0f, 260.0f});
   m_Root.AddChild(m_levelTitle);
 
@@ -125,7 +127,7 @@ void PhaseSecond::Start() {
   m_CurrentState = State::UPDATE;
 };
 
-void PhaseSecond::Update() {
+void PhaseThird::Update() {
   m_boy->SetImage(GA_RESOURCE_DIR "/character/kid.png");
 
   // mask
@@ -220,7 +222,7 @@ void PhaseSecond::Update() {
       auto stair = std::make_shared<Stairs>(stairType);
       float scaleX = scaleDis(gen);    // 隨機寬度
       stair->SetScale({scaleX, 1.0f}); // 設定樓梯寬度
-
+      stair->SetZIndex(40);
       stair->SetPosition({static_cast<float>(xPosDis(gen)),
                           -(m_Background[0]->GetSize().height / 2 + 50)});
       m_Root.AddChild(stair);
@@ -231,6 +233,7 @@ void PhaseSecond::Update() {
             std::make_shared<PointSystem>(GA_RESOURCE_DIR "/icon/badge.png");
         glm::vec2 stairPos = stair->GetPosition();
         point->SetPosition({stairPos.x, stairPos.y + 20});
+        point->SetZIndex(50);
         m_Root.AddChild(point);
         m_points.push_back(point);
       }
@@ -380,14 +383,12 @@ void PhaseSecond::Update() {
       ++it;
     }
   }
-  if (m_pointbag->GetPointCount() >= 10) {
-    NavigationTo(Enum::PhaseEnum::PhaseThird);
-  }
+
   m_Root.Update();
 };
 
-void PhaseSecond::End() {
-  phase = Enum::PhaseEnum::PhaseSecond;
+void PhaseThird::End() {
+  phase = Enum::PhaseEnum::PhaseThird;
 
   m_Root.RemoveChild(m_boy);
   for (auto stair : m_stairs) {
