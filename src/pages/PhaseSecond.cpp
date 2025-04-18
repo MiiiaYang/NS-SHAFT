@@ -55,6 +55,7 @@ void PhaseSecond::Start() {
     float yPos = startY - i * yStep;
 
     stair->SetPosition({xPos, yPos});
+    stair->SetZIndex(40);
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<float> scaleDis(
@@ -69,6 +70,7 @@ void PhaseSecond::Start() {
       auto point =
           std::make_shared<PointSystem>(GA_RESOURCE_DIR "/icon/badge.png");
       point->SetPosition({xPos, yPos + 20});
+      point->SetZIndex(50);
       m_Root.AddChild(point);
       m_points.push_back(point);
     }
@@ -83,12 +85,14 @@ void PhaseSecond::Start() {
   spike_up =
       std::make_shared<EdgeSpike>(GA_RESOURCE_DIR "/background/spikes_top.png");
   spike_up->SetPosition({10.0f, 345.0f});
+  spike_up->SetZIndex(60);
   m_Root.AddChild(spike_up);
   m_spikes.push_back(spike_up);
 
   spike_down = std::make_shared<EdgeSpike>(GA_RESOURCE_DIR
                                            "/background/spikes_bottom.png");
   spike_down->SetPosition({10.0f, -345.0f});
+  spike_down->SetZIndex(60);
   m_Root.AddChild(spike_down);
   m_spikes.push_back(spike_down);
 
@@ -220,7 +224,7 @@ void PhaseSecond::Update() {
       auto stair = std::make_shared<Stairs>(stairType);
       float scaleX = scaleDis(gen);    // 隨機寬度
       stair->SetScale({scaleX, 1.0f}); // 設定樓梯寬度
-
+      stair->SetZIndex(40);
       stair->SetPosition({static_cast<float>(xPosDis(gen)),
                           -(m_Background[0]->GetSize().height / 2 + 50)});
       m_Root.AddChild(stair);
@@ -231,6 +235,7 @@ void PhaseSecond::Update() {
             std::make_shared<PointSystem>(GA_RESOURCE_DIR "/icon/badge.png");
         glm::vec2 stairPos = stair->GetPosition();
         point->SetPosition({stairPos.x, stairPos.y + 20});
+        point->SetZIndex(50);
         m_Root.AddChild(point);
         m_points.push_back(point);
       }
