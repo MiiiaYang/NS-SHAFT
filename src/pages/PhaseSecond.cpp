@@ -27,6 +27,9 @@ void PhaseSecond::Start() {
   m_Background.push_back(std::make_shared<BackgroundImage>(
       "/background/background.png",
       glm::vec2(0, -m_Background[0]->GetSize().height)));
+  m_Background.push_back(std::make_shared<BackgroundImage>(
+      "/background/background.png",
+      glm::vec2(0, -2 * m_Background[0]->GetSize().height)));
 
   for (auto background : m_Background) {
     m_Root.AddChild(background);
@@ -144,8 +147,9 @@ void PhaseSecond::Update() {
 
   // 背景循環邏輯
   if (m_Background[0]->GetPosition().y >= m_Background[0]->GetSize().height) {
-    m_Background[0]->SetPosition({0, -m_Background[1]->GetSize().height});
-    std::swap(m_Background[0], m_Background[1]);
+    m_Background[0]->SetPosition({0, 2 * -m_Background[1]->GetSize().height});
+    std::rotate(m_Background.begin(), m_Background.begin() + 1,
+                m_Background.end());
   }
 
   // 樓梯移動
