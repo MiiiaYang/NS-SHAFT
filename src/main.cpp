@@ -1,9 +1,12 @@
 #include "App.hpp"
-
 #include "Core/Context.hpp"
-#include "enum.hpp"
+#include "Enum.hpp"
+#include "Util/Input.hpp"
+#include "pages/GameoverPage.hpp"
 #include "pages/HomePage.hpp"
-#include "pages/InstructionPage.hpp"
+#include "pages/PhaseFirst.hpp"
+#include "pages/PhaseSecond.hpp"
+#include "pages/UnlimitPage.hpp"
 #include <memory>
 #include <vector>
 
@@ -14,14 +17,23 @@ int main(int, char **) {
   auto currentPhase = Enum::PhaseEnum::HomePage;
 
   phases.push_back(std::make_shared<HomePage>(HomePage()));
-  phases.push_back(std::make_shared<InstructionPage>(InstructionPage()));
+  phases.push_back(std::make_shared<UnlimitPage>(UnlimitPage()));
+  phases.push_back(std::make_shared<PhaseFirst>(PhaseFirst()));
+  phases.push_back(std::make_shared<PhaseSecond>(PhaseSecond()));
+  phases.push_back(std::make_shared<GameoverPage>(GameoverPage()));
 
   while (!context->GetExit()) {
     auto &phase = phases[static_cast<size_t>(currentPhase)];
-    if (phase && (phase->GetPhase() != currentPhase)) {
-      currentPhase = phase->GetPhase();
+
+    if (Util::Input::IsKeyPressed(Util::Keycode::ESCAPE)) {
+      context->SetExit(true);
       continue;
     }
+
+    if (phase && (phase->GetPhase() != currentPhase)) {
+      currentPhase = phase->GetPhase();
+    }
+
     switch (phase->GetCurrentState()) {
     case App::State::START:
       phase->Start();
@@ -33,7 +45,6 @@ int main(int, char **) {
 
     case App::State::END:
       phase->End();
-      context->SetExit(true);
       break;
     }
     context->Update();

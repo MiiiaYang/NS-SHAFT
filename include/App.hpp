@@ -2,8 +2,8 @@
 #define APP_HPP
 
 #include "BackgroundImage.hpp"
+#include "Enum.hpp"
 #include "Util/Renderer.hpp"
-#include "enum.hpp"
 #include "pch.hpp" // IWYU pragma: export
 #include <memory>
 
@@ -26,7 +26,10 @@ public:
 
   virtual void End();
 
-  void NavigationTo(Enum::PhaseEnum phase) { this->phase = phase; }
+  void NavigationTo(Enum::PhaseEnum phase) {
+    m_CurrentState = State::END;
+    this->phase = phase;
+  }
 
   Enum::PhaseEnum phase;
   Util::Renderer m_Root;
