@@ -21,7 +21,7 @@ void HomePage::Start() {
                                             "/menu/level_button_hover.png", 250,
                                             -250, 100, 22);
   m_Button2->SetPosition({250, -250});
-  m_Button2->SetNavigationCallback(Enum::PhaseEnum::PhaseFirst);
+  m_Button2->SetNavigationCallback(Enum::PhaseEnum::PhaseThird);
   m_Root.AddChild(m_Button2);
 
   m_Button1->SetSelected(true);
@@ -30,15 +30,15 @@ void HomePage::Start() {
 }
 
 void HomePage::Update() {
-  if (m_initialTimer<=12)
-  {
+  if (m_initialTimer <= 12) {
     m_initialTimer++;
   }
 
   std::vector<ButtonImage *> buttons = {m_Button1.get(), m_Button2.get()};
   ButtonImage::UpdateButtonNavigation(buttons);
 
-  if (Util::Input::IsKeyPressed(Util::Keycode::RETURN)&& m_initialTimer>=12) {
+  if (Util::Input::IsKeyPressed(Util::Keycode::RETURN) &&
+      m_initialTimer >= 12) {
     Enum::PhaseEnum selectedPage = ButtonImage::GetSelectedDestination();
     NavigationTo(selectedPage);
   }

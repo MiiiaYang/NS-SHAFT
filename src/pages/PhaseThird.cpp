@@ -205,11 +205,16 @@ void PhaseThird::Update() {
     std::uniform_int_distribution<> xPosDis(-115, 115);
     std::uniform_real_distribution<float> scaleDis(0.5f, 1.5f);
 
+    bool Ismoving = false;
+    float direction = 1.0f;
     if (dis(gen) < 0.6) {
       // 隨機生成樓梯
       auto stairType =
           (dis(gen) < 0.4) ? Stairs::StairType::SPIKE : Stairs::StairType::BASE;
-
+      if (dis(gen) < 0.4) {
+        Ismoving = true;
+        direction = (rand() % 2 == 0) ? 1.0f : -1.0f;
+      }
       if (stairType == Stairs::StairType::SPIKE) {
         spikeCount++;
       }
@@ -219,7 +224,7 @@ void PhaseThird::Update() {
         spikeCount = 0;
       }
 
-      auto stair = std::make_shared<Stairs>(stairType);
+      auto stair = std::make_shared<Stairs>(stairType, Ismoving, direction);
       float scaleX = scaleDis(gen);    // 隨機寬度
       stair->SetScale({scaleX, 1.0f}); // 設定樓梯寬度
       stair->SetZIndex(40);
@@ -242,25 +247,18 @@ void PhaseThird::Update() {
 
   glm::vec2 target = m_boy->GetPosition();
   if (Util::Input::IsKeyPressed(Util::Keycode::A)) {
-    if ((frameCounter/5)%2==0)
-    {
+    if ((frameCounter / 5) % 2 == 0) {
       m_boy->SetImage(GA_RESOURCE_DIR "/character/kid_left.png");
-    }
-    else
-    {
+    } else {
       m_boy->SetImage(GA_RESOURCE_DIR "/character/kid_leftgo.png");
-
     }
     target = {target.x - 5, target.y};
   }
 
   if (Util::Input::IsKeyPressed(Util::Keycode::D)) {
-    if ((frameCounter/5)%2==0)
-    {
+    if ((frameCounter / 5) % 2 == 0) {
       m_boy->SetImage(GA_RESOURCE_DIR "/character/kid_right.png");
-    }
-    else
-    {
+    } else {
       m_boy->SetImage(GA_RESOURCE_DIR "/character/kid_rightgo.png");
     }
     target = {target.x + 5, target.y};
@@ -294,7 +292,25 @@ void PhaseThird::Update() {
 
   bool isOnStair = false;
   std::shared_ptr<Stairs> currentStair = nullptr;
+  // 左右移動樓梯
+  for (size_t i = 0; i < m_stairs.size(); i++) {
+    if (m_stairs[i]->GetIsMoving()) {
+      float direction = m_stairs[i]->Getdirection();
+      float x = m_stairs[i]->GetPosition().x;
+      float y = m_stairs[i]->GetPosition().y;
 
+      x += direction * 1.5f;
+
+      if (x < -150 || x > 150) {
+        // 超出邊界就反方向
+        direction = -direction;
+        x += direction * 1.5f; // 補上移動
+        m_stairs[i]->SetDirection(direction);
+      }
+
+      m_stairs[i]->SetPosition({x, y});
+    }
+  }
   for (size_t i = 0; i < m_stairs.size(); i++) {
     auto collisionResult = m_boy->IsCollidingWith(m_stairs[i]);
     if (collisionResult.isColliding &&

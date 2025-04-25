@@ -14,8 +14,10 @@ class Stairs : public Util::GameObject {
 public:
   enum class StairType { BASE = 0, SPIKE = 1 };
   StairType m_Type;
-  explicit Stairs(const StairType type) {
+  explicit Stairs(const StairType type,bool Ismoving=false,float direction=1.0f){
+    m_IsMoving = Ismoving;
     m_Type = type;
+    m_direction = direction;
     switch (type) {
     case StairType::BASE:
       m_ImagePath = (GA_RESOURCE_DIR "/stairs/general_stairs.png");
@@ -42,8 +44,14 @@ public:
     return m_Transform.translation;
   }
 
+  bool GetIsMoving() const { return m_IsMoving; }
+  float Getdirection() { return m_direction; }
+  void SetDirection(float direction) { m_direction = direction; }
+
 private:
   std::string m_ImagePath;
+  bool m_IsMoving;
+  float m_direction;
 };
 
 #endif // STAIRS_HPP
