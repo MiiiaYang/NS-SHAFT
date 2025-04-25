@@ -207,8 +207,15 @@ void PhaseThird::Update() {
 
     if (dis(gen) < 0.6) {
       // 隨機生成樓梯
-      auto stairType =
-          (dis(gen) < 0.4) ? Stairs::StairType::SPIKE : Stairs::StairType::BASE;
+      auto stairType = [&]() {
+        float r = dis(gen);
+        if (r < 0.3) // 30% Crack
+          return Stairs::StairType::CRACK;
+        if (r < 0.6) // 30% Spike
+          return Stairs::StairType::SPIKE;
+        // other 40% Base
+        return Stairs::StairType::BASE;
+      }();
 
       if (stairType == Stairs::StairType::SPIKE) {
         spikeCount++;
@@ -242,25 +249,18 @@ void PhaseThird::Update() {
 
   glm::vec2 target = m_boy->GetPosition();
   if (Util::Input::IsKeyPressed(Util::Keycode::A)) {
-    if ((frameCounter/5)%2==0)
-    {
+    if ((frameCounter / 5) % 2 == 0) {
       m_boy->SetImage(GA_RESOURCE_DIR "/character/kid_left.png");
-    }
-    else
-    {
+    } else {
       m_boy->SetImage(GA_RESOURCE_DIR "/character/kid_leftgo.png");
-
     }
     target = {target.x - 5, target.y};
   }
 
   if (Util::Input::IsKeyPressed(Util::Keycode::D)) {
-    if ((frameCounter/5)%2==0)
-    {
+    if ((frameCounter / 5) % 2 == 0) {
       m_boy->SetImage(GA_RESOURCE_DIR "/character/kid_right.png");
-    }
-    else
-    {
+    } else {
       m_boy->SetImage(GA_RESOURCE_DIR "/character/kid_rightgo.png");
     }
     target = {target.x + 5, target.y};
@@ -296,22 +296,49 @@ void PhaseThird::Update() {
   std::shared_ptr<Stairs> currentStair = nullptr;
 
   for (size_t i = 0; i < m_stairs.size(); i++) {
+    auto stair = m_stairs[i];
+    if (stair->GetType() == Stairs::StairType::CRACK &&
+        stair->disappear_countdown < 180 && stair->disappear_countdown != 0) {
+      stair->disappear_countdown--;
+    } else if (stair->GetType() == Stairs::StairType::CRACK &&
+               stair->disappear_countdown == 0) {
+      m_Root.RemoveChild(stair);
+    }
+  }
+
+  for (size_t i = 0; i < m_stairs.size(); i++) {
     auto collisionResult = m_boy->IsCollidingWith(m_stairs[i]);
     if (collisionResult.isColliding &&
         collisionResult.side == Character::CollisionSide::Top) {
       isOnStair = true;
       currentStair = m_stairs[i];
 
-      if (currentStair && currentStair->GetType() == Stairs::StairType::SPIKE &&
-          currentStair != m_lastDamagingStair && !m_IsInvincible) {
-        if (m_lives > 0) {
-          --m_lives;
-          m_hearts[m_lives]->SetImage(GA_RESOURCE_DIR "/icon/blood_stroke.png");
-
-          m_lastDamagingStair = currentStair;
-
-          m_IsInvincible = true;
-          m_InvincibleFrame = m_InvincibleFrameDuration;
+      if (currentStair) {
+        switch (currentStair->GetType()) {
+        case Stairs::StairType::SPIKE:
+          if (currentStair != m_lastDamagingStair && !m_IsInvincible) {
+            if (m_lives > 0) {
+              --m_lives;
+              m_hearts[m_lives]->SetImage(GA_RESOURCE_DIR
+                                          "/icon/blood_stroke.png");
+              m_lastDamagingStair = currentStair;
+              m_IsInvincible = true;
+              m_InvincibleFrame = m_InvincibleFrameDuration;
+            }
+          }
+          break;
+        case Stairs::StairType::CRACK:
+          if (currentStair->disappear_countdown > 0) {
+            currentStair->disappear_countdown--;
+          } else {
+            m_Root.RemoveChild(currentStair);
+            m_stairs.erase(
+                std::remove(m_stairs.begin(), m_stairs.end(), currentStair),
+                m_stairs.end());
+          }
+          break;
+        case Stairs::StairType::BASE:
+          break;
         }
       }
       break;
