@@ -208,8 +208,13 @@ void PhaseSecond::Update() {
 
     if (dis(gen) < 0.6) {
       // 隨機生成樓梯
-      auto stairType =
-          (dis(gen) < 0.4) ? Stairs::StairType::SPIKE : Stairs::StairType::BASE;
+      auto stairType = [&]() {
+        float r = dis(gen);
+        if (r < 0.4) // 40% Spike
+          return Stairs::StairType::SPIKE;
+        // other 60% Base
+        return Stairs::StairType::BASE;
+      }();
 
       if (stairType == Stairs::StairType::SPIKE) {
         spikeCount++;
@@ -296,16 +301,24 @@ void PhaseSecond::Update() {
       isOnStair = true;
       currentStair = m_stairs[i];
 
-      if (currentStair && currentStair->GetType() == Stairs::StairType::SPIKE &&
-          currentStair != m_lastDamagingStair && !m_IsInvincible) {
-        if (m_lives > 0) {
-          --m_lives;
-          m_hearts[m_lives]->SetImage(GA_RESOURCE_DIR "/icon/blood_stroke.png");
-
-          m_lastDamagingStair = currentStair;
-
-          m_IsInvincible = true;
-          m_InvincibleFrame = m_InvincibleFrameDuration;
+      if (currentStair) {
+        switch (currentStair->GetType()) {
+        case Stairs::StairType::SPIKE:
+          if (currentStair != m_lastDamagingStair && !m_IsInvincible) {
+            if (m_lives > 0) {
+              --m_lives;
+              m_hearts[m_lives]->SetImage(GA_RESOURCE_DIR
+                                          "/icon/blood_stroke.png");
+              m_lastDamagingStair = currentStair;
+              m_IsInvincible = true;
+              m_InvincibleFrame = m_InvincibleFrameDuration;
+            }
+          }
+          break;
+        case Stairs::StairType::CRACK:
+          break;
+        case Stairs::StairType::BASE:
+          break;
         }
       }
       break;
