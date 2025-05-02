@@ -205,7 +205,10 @@ void PhaseThird::Update() {
     std::uniform_int_distribution<> xPosDis(-115, 115);
     std::uniform_real_distribution<float> scaleDis(0.5f, 1.5f);
 
+    bool Ismoving = false;
+    float direction = 1.0f;
     if (dis(gen) < 0.6) {
+
       // 隨機生成樓梯
       auto stairType = [&]() {
         float r = dis(gen);
@@ -217,6 +220,11 @@ void PhaseThird::Update() {
         return Stairs::StairType::BASE;
       }();
 
+      if (dis(gen) < 0.3) {
+        Ismoving = true;
+        direction = (rand() % 2 == 0) ? 1.0f : -1.0f;
+      }
+
       if (stairType == Stairs::StairType::SPIKE) {
         spikeCount++;
       }
@@ -226,7 +234,7 @@ void PhaseThird::Update() {
         spikeCount = 0;
       }
 
-      auto stair = std::make_shared<Stairs>(stairType);
+      auto stair = std::make_shared<Stairs>(stairType, Ismoving, direction);
       float scaleX = scaleDis(gen);    // 隨機寬度
       stair->SetScale({scaleX, 1.0f}); // 設定樓梯寬度
       stair->SetZIndex(40);
@@ -294,7 +302,25 @@ void PhaseThird::Update() {
 
   bool isOnStair = false;
   std::shared_ptr<Stairs> currentStair = nullptr;
+  // 左右移動樓梯
+  for (size_t i = 0; i < m_stairs.size(); i++) {
+    if (m_stairs[i]->GetIsMoving()) {
+      float direction = m_stairs[i]->Getdirection();
+      float x = m_stairs[i]->GetPosition().x;
+      float y = m_stairs[i]->GetPosition().y;
 
+      x += direction * 1.5f;
+
+      if (x < -150 || x > 150) {
+        // 超出邊界就反方向
+        direction = -direction;
+        x += direction * 1.5f; // 補上移動
+        m_stairs[i]->SetDirection(direction);
+      }
+
+      m_stairs[i]->SetPosition({x, y});
+    }
+  }
   for (size_t i = 0; i < m_stairs.size(); i++) {
     auto stair = m_stairs[i];
     if (stair->GetType() == Stairs::StairType::CRACK &&
