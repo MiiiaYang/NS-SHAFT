@@ -33,6 +33,19 @@ public:
 
   void SetScale(const glm::vec2 &scale) { m_Transform.scale = scale; }
 
+  struct Size {
+    float height;
+    float width;
+  };
+
+  Size GetSize() {
+    auto width = GetScaledSize();
+    return {
+        width.y,
+        width.x,
+    };
+  }
+
   // TODO: Implement the collision detection
   [[nodiscard]] bool IfCollides(const std::shared_ptr<Character> &other) const {
     (void)other;

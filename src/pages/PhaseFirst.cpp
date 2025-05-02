@@ -226,25 +226,18 @@ void PhaseFirst::Update() {
 
   glm::vec2 target = m_boy->GetPosition();
   if (Util::Input::IsKeyPressed(Util::Keycode::A)) {
-    if ((frameCounter/5)%2==0)
-    {
+    if ((frameCounter / 5) % 2 == 0) {
       m_boy->SetImage(GA_RESOURCE_DIR "/character/kid_left.png");
-    }
-    else
-    {
+    } else {
       m_boy->SetImage(GA_RESOURCE_DIR "/character/kid_leftgo.png");
-
     }
     target = {target.x - 5, target.y};
   }
 
   if (Util::Input::IsKeyPressed(Util::Keycode::D)) {
-    if ((frameCounter/5)%2==0)
-    {
+    if ((frameCounter / 5) % 2 == 0) {
       m_boy->SetImage(GA_RESOURCE_DIR "/character/kid_right.png");
-    }
-    else
-    {
+    } else {
       m_boy->SetImage(GA_RESOURCE_DIR "/character/kid_rightgo.png");
     }
     target = {target.x + 5, target.y};
@@ -276,7 +269,6 @@ void PhaseFirst::Update() {
     m_IsGrounded = false;
   }
 
-  // 樓梯碰撞檢測
   auto isOnStair = false;
   std::shared_ptr<Stairs> currentStair = nullptr;
 
@@ -293,8 +285,10 @@ void PhaseFirst::Update() {
   if (isOnStair) {
     m_VerticalVelocity = 0.0f;
     m_IsGrounded = true;
-    glm::vec2 charPos = m_boy->GetPosition();
-    m_boy->SetPosition({charPos.x, charPos.y + 1});
+    float setPos = currentStair->GetPosition().y +
+                   currentStair->GetSize().height / 2 +
+                   m_boy->GetSize().height / 2;
+    m_boy->SetPosition({posX, setPos});
   } else if (!m_IsGrounded) {
     m_boy->SetPosition({posX, posY});
   }
@@ -350,16 +344,12 @@ void PhaseFirst::Update() {
     LOG_DEBUG(pos);
   }
 
-  if (Util::Input::IsKeyPressed(Util::Keycode::P))
-  {
-    if (m_initialTimer<=10)
-    {
+  if (Util::Input::IsKeyPressed(Util::Keycode::P)) {
+    if (m_initialTimer <= 10) {
       m_initialTimer++;
-    }
-    else
-    {
+    } else {
       m_pointbag->AddPoint();
-      m_initialTimer=0;
+      m_initialTimer = 0;
     }
   }
 
