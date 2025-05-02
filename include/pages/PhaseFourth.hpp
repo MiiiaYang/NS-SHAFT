@@ -7,7 +7,7 @@ class PhaseFourth: public Phase {
 public:
     int spikeCount = 0;
     std::shared_ptr<Stairs> m_lastDamagingStair = nullptr;
-
+    int m_initialTimer = 0;
     explicit PhaseFourth() { phase = Enum::PhaseEnum::PhaseFourth; }
 
     void Start() override;

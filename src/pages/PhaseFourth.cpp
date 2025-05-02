@@ -359,11 +359,6 @@ void PhaseFourth::Update() {
     m_boy->SetPosition({posX, posY});
   }
 
-  if (Util::Input::IsKeyPressed(Util::Keycode::MOUSE_LB)) {
-    auto pos = Util::Input::GetCursorPosition();
-    LOG_DEBUG(pos);
-  }
-
   if (!m_IsInvincible) {
     for (size_t i = 0; i < m_spikes.size(); i++) {
       if (m_boy->IsCollidingWith(m_spikes[i]).isColliding) {
@@ -409,6 +404,24 @@ void PhaseFourth::Update() {
     } else {
       ++it;
     }
+  }
+
+  if (Util::Input::IsKeyPressed(Util::Keycode::P))
+  {
+    if (m_initialTimer<=10)
+    {
+      m_initialTimer++;
+    }
+    else
+    {
+      m_pointbag->AddPoint();
+      m_initialTimer=0;
+    }
+  }
+
+  if (Util::Input::IsKeyPressed(Util::Keycode::MOUSE_LB)) {
+    auto pos = Util::Input::GetCursorPosition();
+    LOG_DEBUG(pos);
   }
 
   m_Root.Update();

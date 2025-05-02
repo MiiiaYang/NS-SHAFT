@@ -6,7 +6,7 @@
 class PhaseFirst : public Phase {
 public:
   explicit PhaseFirst() { phase = Enum::PhaseEnum::PhaseFirst; }
-
+  int m_initialTimer=0;
   void Start() override;
   void Update() override;
   void End() override;
