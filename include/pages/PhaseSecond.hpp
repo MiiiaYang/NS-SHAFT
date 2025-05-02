@@ -9,7 +9,7 @@ public:
   std::shared_ptr<Stairs> m_lastDamagingStair = nullptr;
 
   explicit PhaseSecond() { phase = Enum::PhaseEnum::PhaseSecond; }
-
+  int m_initialTimer=0;
   void Start() override;
   void Update() override;
   void End() override;
