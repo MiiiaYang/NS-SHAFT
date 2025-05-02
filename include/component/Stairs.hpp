@@ -14,8 +14,9 @@ class Stairs : public Util::GameObject {
 public:
   enum class StairType { BASE = 0, SPIKE = 1, CRACK = 2 };
   StairType m_Type;
-  explicit Stairs(const StairType type,bool Ismoving=false,float direction=1.0f){
-    int disappear_countdown = 0;
+  int disappear_countdown = 0;
+  explicit Stairs(const StairType type, bool Ismoving = false,
+                  float direction = 1.0f) {
     m_IsMoving = Ismoving;
     m_Type = type;
     m_direction = direction;

@@ -208,10 +208,8 @@ void PhaseThird::Update() {
     bool Ismoving = false;
     float direction = 1.0f;
     if (dis(gen) < 0.6) {
+
       // 隨機生成樓梯
-      auto stairType =
-          (dis(gen) < 0.4) ? Stairs::StairType::SPIKE : Stairs::StairType::BASE;
-      
       auto stairType = [&]() {
         float r = dis(gen);
         if (r < 0.3) // 30% Crack
@@ -221,8 +219,8 @@ void PhaseThird::Update() {
         // other 40% Base
         return Stairs::StairType::BASE;
       }();
-      
-      if (dis(gen) < 0.4) {
+
+      if (dis(gen) < 0.3) {
         Ismoving = true;
         direction = (rand() % 2 == 0) ? 1.0f : -1.0f;
       }
