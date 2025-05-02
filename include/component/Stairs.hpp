@@ -49,6 +49,19 @@ public:
     return m_Transform.translation;
   }
 
+  struct Size {
+    float height;
+    float width;
+  };
+
+  Size GetSize() {
+    auto width = GetScaledSize();
+    return {
+        width.y,
+        width.x,
+    };
+  }
+
   bool GetIsMoving() const { return m_IsMoving; }
   float Getdirection() { return m_direction; }
   void SetDirection(float direction) { m_direction = direction; }
