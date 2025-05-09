@@ -176,7 +176,6 @@ void PhaseSecond::Update() {
     if (pos.y > (m_Background[0]->GetSize().height / 2)) {
       m_Root.RemoveChild(stair);
       it = m_stairs.erase(it);
-      LOG_DEBUG("remove");
     } else {
       ++it;
     }
@@ -359,7 +358,6 @@ void PhaseSecond::Update() {
   }
 
   if (m_lives == 0) {
-    LOG_DEBUG("Player is dead");
     NavigationTo(Enum::PhaseEnum::GameoverPage);
   }
 
@@ -381,8 +379,6 @@ void PhaseSecond::Update() {
       // 確保點數完全移除
       m_Root.RemoveChild(*it);
       it = m_points.erase(it); // 從列表中刪除
-      LOG_DEBUG("Collide with Point");
-
     } else {
       ++it;
     }
