@@ -3,16 +3,17 @@
 
 #include "Phase.hpp"
 #include "component/stairs.hpp"
-class PhaseThird: public Phase {
+class PhaseThird : public Phase {
 public:
-    int spikeCount = 0;
-    std::shared_ptr<Stairs> m_lastDamagingStair = nullptr;
+  int spikeCount = 0;
+  float move_speed = 1.3f;
+  std::shared_ptr<Stairs> m_lastDamagingStair = nullptr;
 
-    explicit PhaseThird() { phase = Enum::PhaseEnum::PhaseThird; }
-    int m_initialTimer=0;
-    void Start() override;
-    void Update() override;
-    void End() override;
+  explicit PhaseThird() { phase = Enum::PhaseEnum::PhaseThird; }
+  int m_initialTimer = 0;
+  void Start() override;
+  void Update() override;
+  void End() override;
 };
 
 #endif // PHASE_THIRD_HPP

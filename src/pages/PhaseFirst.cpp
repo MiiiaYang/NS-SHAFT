@@ -147,7 +147,7 @@ void PhaseFirst::Update() {
   // 移動背景
   for (auto background : m_Background) {
     auto pos = background->GetPosition();
-    background->SetPosition({pos.x, pos.y + 1});
+    background->SetPosition({pos.x, pos.y + move_speed});
   }
 
   // 背景循環邏輯
@@ -160,13 +160,13 @@ void PhaseFirst::Update() {
   // 樓梯移動
   for (auto stair : m_stairs) {
     auto pos = stair->getPosition();
-    stair->SetPosition({pos.x, pos.y + 1});
+    stair->SetPosition({pos.x, pos.y + move_speed});
   }
 
   // 點數向上移動
   for (auto point : m_points) {
     auto pos = point->GetPosition();
-    point->SetPosition({pos.x, pos.y + 1});
+    point->SetPosition({pos.x, pos.y + move_speed});
   }
 
   for (auto it = m_stairs.begin(); it != m_stairs.end();) {
@@ -176,7 +176,6 @@ void PhaseFirst::Update() {
     if (pos.y > (m_Background[0]->GetSize().height / 2)) {
       m_Root.RemoveChild(stair);
       it = m_stairs.erase(it);
-      LOG_DEBUG("remove");
     } else {
       ++it;
     }
@@ -296,8 +295,6 @@ void PhaseFirst::Update() {
   if (!m_IsInvincible) {
     for (size_t i = 0; i < m_spikes.size(); i++) {
       if (m_boy->IsCollidingWith(m_spikes[i]).isColliding) {
-        LOG_DEBUG("Collide with spike");
-
         if (m_lives > 0) {
           --m_lives;
           m_hearts[m_lives]->SetImage(GA_RESOURCE_DIR "/icon/blood_stroke.png");
@@ -307,7 +304,6 @@ void PhaseFirst::Update() {
           m_InvincibleFrame = m_InvincibleFrameDuration;
 
           if (m_lives == 0) {
-            LOG_DEBUG("Player is dead");
             NavigationTo(Enum::PhaseEnum::GameoverPage);
           }
         }

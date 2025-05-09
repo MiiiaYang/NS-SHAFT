@@ -147,7 +147,7 @@ void PhaseSecond::Update() {
   // 移動背景
   for (auto background : m_Background) {
     auto pos = background->GetPosition();
-    background->SetPosition({pos.x, pos.y + 1.2});
+    background->SetPosition({pos.x, pos.y + move_speed});
   }
 
   // 背景循環邏輯
@@ -160,13 +160,13 @@ void PhaseSecond::Update() {
   // 樓梯移動
   for (auto stair : m_stairs) {
     auto pos = stair->getPosition();
-    stair->SetPosition({pos.x, pos.y + 1.2});
+    stair->SetPosition({pos.x, pos.y + move_speed});
   }
 
   // 點數向上移動
   for (auto point : m_points) {
     auto pos = point->GetPosition();
-    point->SetPosition({pos.x, pos.y + 1.2});
+    point->SetPosition({pos.x, pos.y + move_speed});
   }
 
   for (auto it = m_stairs.begin(); it != m_stairs.end();) {
@@ -176,7 +176,6 @@ void PhaseSecond::Update() {
     if (pos.y > (m_Background[0]->GetSize().height / 2)) {
       m_Root.RemoveChild(stair);
       it = m_stairs.erase(it);
-      LOG_DEBUG("remove");
     } else {
       ++it;
     }
@@ -332,8 +331,10 @@ void PhaseSecond::Update() {
   if (isOnStair) {
     m_VerticalVelocity = 0.0f;
     m_IsGrounded = true;
-    glm::vec2 charPos = m_boy->GetPosition();
-    m_boy->SetPosition({charPos.x, charPos.y + 1.2});
+    float setPos = currentStair->GetPosition().y +
+                   currentStair->GetSize().height / 2 +
+                   m_boy->GetSize().height / 2;
+    m_boy->SetPosition({posX, setPos});
 
   } else if (!m_IsGrounded) {
     m_boy->SetPosition({posX, posY});
@@ -357,7 +358,6 @@ void PhaseSecond::Update() {
   }
 
   if (m_lives == 0) {
-    LOG_DEBUG("Player is dead");
     NavigationTo(Enum::PhaseEnum::GameoverPage);
   }
 
@@ -379,8 +379,6 @@ void PhaseSecond::Update() {
       // 確保點數完全移除
       m_Root.RemoveChild(*it);
       it = m_points.erase(it); // 從列表中刪除
-      LOG_DEBUG("Collide with Point");
-
     } else {
       ++it;
     }
@@ -389,16 +387,12 @@ void PhaseSecond::Update() {
     NavigationTo(Enum::PhaseEnum::PhaseThird);
   }
 
-  if (Util::Input::IsKeyPressed(Util::Keycode::P))
-  {
-    if (m_initialTimer<=10)
-    {
+  if (Util::Input::IsKeyPressed(Util::Keycode::P)) {
+    if (m_initialTimer <= 10) {
       m_initialTimer++;
-    }
-    else
-    {
+    } else {
       m_pointbag->AddPoint();
-      m_initialTimer=0;
+      m_initialTimer = 0;
     }
   }
 
