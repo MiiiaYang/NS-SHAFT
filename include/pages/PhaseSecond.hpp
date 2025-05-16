@@ -7,9 +7,10 @@ class PhaseSecond : public Phase {
 public:
   int spikeCount = 0;
   std::shared_ptr<Stairs> m_lastDamagingStair = nullptr;
+  float move_speed = 1.2f;
 
   explicit PhaseSecond() { phase = Enum::PhaseEnum::PhaseSecond; }
-  int m_initialTimer=0;
+  int m_initialTimer = 0;
   void Start() override;
   void Update() override;
   void End() override;
