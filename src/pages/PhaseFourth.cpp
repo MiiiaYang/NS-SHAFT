@@ -124,6 +124,7 @@ void PhaseFourth::Start() {
   m_IsInvincible = false;
   m_InvincibleFrame = 0;
 
+
   m_CurrentState = State::UPDATE;
 };
 
@@ -195,14 +196,14 @@ void PhaseFourth::Update() {
   static int frameCounter = 0;
   frameCounter++;
 
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<> dis(0, 1);
+  std::uniform_int_distribution<> xPosDis(-115, 115);
+  std::uniform_real_distribution<float> scaleDis(0.5f, 1.5f);
+
   if (frameCounter >= 80) {
     frameCounter = 0;
-
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dis(0, 1);
-    std::uniform_int_distribution<> xPosDis(-115, 115);
-    std::uniform_real_distribution<float> scaleDis(0.5f, 1.5f);
 
     if (dis(gen) < 0.6) {
       // 隨機生成樓梯
@@ -255,6 +256,39 @@ void PhaseFourth::Update() {
     }
     target = {target.x - 5, target.y};
   }
+
+  //掉落障礙物
+  static int obstacleTimer = 0;
+  obstacleTimer++;
+
+  std::uniform_int_distribution<> obstacle_xPosDis(-180, 180);
+
+  if (obstacleTimer >= 120 ) { // 每2秒生成一個（60fps為單位）
+    obstacleTimer = 0;
+    if (dis(gen) < 0.3)
+    {
+      auto obstacle = std::make_shared<FallingObstacle>(GA_RESOURCE_DIR "/icon/obstacle.png");
+      obstacle->SetPosition({static_cast<float>(obstacle_xPosDis(gen)), 360.0f}); // 從畫面頂端掉落
+      m_Root.AddChild(obstacle);
+      m_obstacles.push_back(obstacle);
+    }
+  }
+  for (auto it = m_obstacles.begin(); it != m_obstacles.end();) {
+    auto obstacle = *it;
+
+    glm::vec2 pos = obstacle->GetPosition();
+    pos.y -= obstacle->GetSpeed();
+    obstacle->SetPosition(pos);
+    obstacle->SetZIndex(90);
+
+    if (obstacle->GetPosition().y < -360.0f) {
+      m_Root.RemoveChild(obstacle);
+      it = m_obstacles.erase(it);
+    } else {
+      ++it;
+    }
+  }
+
 
   if (Util::Input::IsKeyPressed(Util::Keycode::D)) {
     if ((frameCounter / 5) % 2 == 0) {
@@ -451,5 +485,9 @@ void PhaseFourth::End() {
   }
   m_hearts.clear();
   m_Root.RemoveChild(m_LevelMask);
+  for (auto obstacle : m_obstacles) {
+    m_Root.RemoveChild(obstacle);
+  }
+  m_obstacles.clear();
   m_CurrentState = App::State::START;
 };
