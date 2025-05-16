@@ -167,7 +167,7 @@ void PhaseFourth::Update() {
     auto pos = point->GetPosition();
     point->SetPosition({pos.x, pos.y + move_speed});
   }
-  //掉落物移動
+  // 掉落物移動
   for (auto it = m_obstacles.begin(); it != m_obstacles.end();) {
     auto obstacle = *it;
 
@@ -184,7 +184,7 @@ void PhaseFourth::Update() {
     }
   }
 
-//超出螢幕刪除
+  // 超出螢幕刪除
   for (auto it = m_stairs.begin(); it != m_stairs.end();) {
     auto stair = *it;
     auto pos = stair->getPosition();
@@ -208,8 +208,6 @@ void PhaseFourth::Update() {
       ++it;
     }
   }
-
-
 
   static int frameCounter = 0;
   frameCounter++;
@@ -284,9 +282,7 @@ void PhaseFourth::Update() {
   }
 
   // 掉落障礙物
-  static int obstacleTimer = 0;
   obstacleTimer++;
-
   std::uniform_int_distribution<> obstacle_xPosDis(-180, 180);
 
   if (obstacleTimer >= 120) { // 每2秒生成一個（60fps為單位）
@@ -301,7 +297,6 @@ void PhaseFourth::Update() {
       m_obstacles.push_back(obstacle);
     }
   }
-
 
   if (Util::Input::IsKeyPressed(Util::Keycode::D)) {
     if ((frameCounter / 5) % 2 == 0) {
@@ -409,10 +404,9 @@ void PhaseFourth::Update() {
   } else if (!m_IsGrounded) {
     m_boy->SetPosition({posX, posY});
   }
-//碰撞判斷
+  // 碰撞判斷
   if (!m_IsInvincible) {
-    for (auto it = m_obstacles.begin(); it != m_obstacles.end();)
-    {
+    for (auto it = m_obstacles.begin(); it != m_obstacles.end();) {
       auto obstacle = *it;
       if (m_boy->IsCollidingWith(obstacle).isColliding) {
         if (m_lives > 0) {

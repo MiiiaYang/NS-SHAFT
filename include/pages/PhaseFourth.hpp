@@ -8,6 +8,7 @@ class PhaseFourth : public Phase {
 
 public:
   int spikeCount = 0;
+  int obstacleTimer = 0;
   std::shared_ptr<Stairs> m_lastDamagingStair = nullptr;
   int m_initialTimer = 0;
   float move_speed = 1.3f;
