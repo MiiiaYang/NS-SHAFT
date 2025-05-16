@@ -168,7 +168,24 @@ void PhaseFourth::Update() {
     auto pos = point->GetPosition();
     point->SetPosition({pos.x, pos.y + move_speed});
   }
+  //掉落物移動
+  for (auto it = m_obstacles.begin(); it != m_obstacles.end();) {
+    auto obstacle = *it;
 
+    glm::vec2 pos = obstacle->GetPosition();
+    pos.y -= obstacle->GetSpeed();
+    obstacle->SetPosition(pos);
+    obstacle->SetZIndex(90);
+
+    if (obstacle->GetPosition().y < -360.0f) {
+      m_Root.RemoveChild(obstacle);
+      it = m_obstacles.erase(it);
+    } else {
+      ++it;
+    }
+  }
+
+//超出螢幕刪除
   for (auto it = m_stairs.begin(); it != m_stairs.end();) {
     auto stair = *it;
     auto pos = stair->getPosition();
@@ -192,6 +209,8 @@ void PhaseFourth::Update() {
       ++it;
     }
   }
+
+
 
   static int frameCounter = 0;
   frameCounter++;
@@ -265,7 +284,7 @@ void PhaseFourth::Update() {
 
   if (obstacleTimer >= 120 ) { // 每2秒生成一個（60fps為單位）
     obstacleTimer = 0;
-    if (dis(gen) < 0.3)
+    if (dis(gen) < 0.5)
     {
       auto obstacle = std::make_shared<FallingObstacle>(GA_RESOURCE_DIR "/icon/obstacle.png");
       obstacle->SetPosition({static_cast<float>(obstacle_xPosDis(gen)), 360.0f}); // 從畫面頂端掉落
@@ -273,21 +292,7 @@ void PhaseFourth::Update() {
       m_obstacles.push_back(obstacle);
     }
   }
-  for (auto it = m_obstacles.begin(); it != m_obstacles.end();) {
-    auto obstacle = *it;
 
-    glm::vec2 pos = obstacle->GetPosition();
-    pos.y -= obstacle->GetSpeed();
-    obstacle->SetPosition(pos);
-    obstacle->SetZIndex(90);
-
-    if (obstacle->GetPosition().y < -360.0f) {
-      m_Root.RemoveChild(obstacle);
-      it = m_obstacles.erase(it);
-    } else {
-      ++it;
-    }
-  }
 
 
   if (Util::Input::IsKeyPressed(Util::Keycode::D)) {
@@ -393,8 +398,27 @@ void PhaseFourth::Update() {
   } else if (!m_IsGrounded) {
     m_boy->SetPosition({posX, posY});
   }
-
+//碰撞判斷
   if (!m_IsInvincible) {
+    for (auto it = m_obstacles.begin(); it != m_obstacles.end();)
+    {
+      auto obstacle = *it;
+      if (m_boy->IsCollidingWith(obstacle).isColliding) {
+        if (m_lives > 0) {
+          --m_lives;
+          m_hearts[m_lives]->SetImage(GA_RESOURCE_DIR "/icon/blood_stroke.png");
+
+          // 啟動無敵模式
+          m_IsInvincible = true;
+          m_InvincibleFrame = m_InvincibleFrameDuration;
+        }
+        // 撞到就移除障礙物
+        m_Root.RemoveChild(obstacle);
+        it = m_obstacles.erase(it);
+      } else {
+        ++it;
+      }
+    }
     for (size_t i = 0; i < m_spikes.size(); i++) {
       if (m_boy->IsCollidingWith(m_spikes[i]).isColliding) {
 
