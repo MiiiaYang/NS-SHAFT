@@ -124,7 +124,6 @@ void PhaseFourth::Start() {
   m_IsInvincible = false;
   m_InvincibleFrame = 0;
 
-
   m_CurrentState = State::UPDATE;
 };
 
@@ -209,11 +208,19 @@ void PhaseFourth::Update() {
       // 隨機生成樓梯
       auto stairType = [&]() {
         float r = dis(gen);
-        if (r < 0.3) // 30% Crack
+
+        float CrackRate = 0.25f;
+        float SpikeRate = 0.2f;
+        float BounceRate = 0.3f;
+        // max = 1.0 => 100%
+        // other is Base
+
+        if (r < CrackRate)
           return Stairs::StairType::CRACK;
-        if (r < 0.6) // 30% Spike
+        if (r < CrackRate + SpikeRate)
           return Stairs::StairType::SPIKE;
-        // other 40% Base
+        if (r < CrackRate + SpikeRate + BounceRate)
+          return Stairs::StairType::BOUNCE;
         return Stairs::StairType::BASE;
       }();
 
@@ -257,18 +264,19 @@ void PhaseFourth::Update() {
     target = {target.x - 5, target.y};
   }
 
-  //掉落障礙物
+  // 掉落障礙物
   static int obstacleTimer = 0;
   obstacleTimer++;
 
   std::uniform_int_distribution<> obstacle_xPosDis(-180, 180);
 
-  if (obstacleTimer >= 120 ) { // 每2秒生成一個（60fps為單位）
+  if (obstacleTimer >= 120) { // 每2秒生成一個（60fps為單位）
     obstacleTimer = 0;
-    if (dis(gen) < 0.3)
-    {
-      auto obstacle = std::make_shared<FallingObstacle>(GA_RESOURCE_DIR "/icon/obstacle.png");
-      obstacle->SetPosition({static_cast<float>(obstacle_xPosDis(gen)), 360.0f}); // 從畫面頂端掉落
+    if (dis(gen) < 0.3) {
+      auto obstacle = std::make_shared<FallingObstacle>(GA_RESOURCE_DIR
+                                                        "/icon/obstacle.png");
+      obstacle->SetPosition({static_cast<float>(obstacle_xPosDis(gen)),
+                             360.0f}); // 從畫面頂端掉落
       m_Root.AddChild(obstacle);
       m_obstacles.push_back(obstacle);
     }
@@ -289,7 +297,6 @@ void PhaseFourth::Update() {
     }
   }
 
-
   if (Util::Input::IsKeyPressed(Util::Keycode::D)) {
     if ((frameCounter / 5) % 2 == 0) {
       m_boy->SetImage(GA_RESOURCE_DIR "/character/kid_right.png");
@@ -304,11 +311,6 @@ void PhaseFourth::Update() {
       target.y > -330.000000) {
     m_boy->SetPosition(target);
   }
-
-  // if (m_IsGrounded && Util::Input::IsKeyPressed(Util::Keycode::W)) {
-  //   m_VerticalVelocity = 7.0f;
-  //   m_IsGrounded = false;
-  // }
 
   // 重力計算
   float posX = m_boy->GetPosition().x;
@@ -341,9 +343,12 @@ void PhaseFourth::Update() {
 
   for (size_t i = 0; i < m_stairs.size(); i++) {
     auto collisionResult = m_boy->IsCollidingWith(m_stairs[i]);
+
     if (collisionResult.isColliding &&
         collisionResult.side == Character::CollisionSide::Top) {
+
       isOnStair = true;
+      isBouncing = false;
       currentStair = m_stairs[i];
 
       if (currentStair) {
@@ -370,6 +375,12 @@ void PhaseFourth::Update() {
                 m_stairs.end());
           }
           break;
+        case Stairs::StairType::BOUNCE:
+          m_VerticalVelocity = 10.0f; // 設置彈跳速度
+          isOnStair = false;
+          m_IsGrounded = false;
+          isBouncing = true;
+          break;
         case Stairs::StairType::BASE:
           break;
         }
@@ -382,14 +393,13 @@ void PhaseFourth::Update() {
     m_lastDamagingStair = nullptr;
   }
 
-  if (isOnStair) {
+  if (!isBouncing && isOnStair) {
     m_VerticalVelocity = 0.0f;
     m_IsGrounded = true;
     float setPos = currentStair->GetPosition().y +
                    currentStair->GetSize().height / 2 +
                    m_boy->GetSize().height / 2;
     m_boy->SetPosition({posX, setPos});
-
   } else if (!m_IsGrounded) {
     m_boy->SetPosition({posX, posY});
   }

@@ -12,7 +12,7 @@
 
 class Stairs : public Util::GameObject {
 public:
-  enum class StairType { BASE = 0, SPIKE = 1, CRACK = 2 };
+  enum class StairType { BASE = 0, SPIKE = 1, CRACK = 2, BOUNCE = 3 };
   StairType m_Type;
   int disappear_countdown = 0;
   explicit Stairs(const StairType type, bool Ismoving = false,
@@ -30,6 +30,9 @@ public:
     case StairType::CRACK:
       disappear_countdown = 180;
       m_ImagePath = (GA_RESOURCE_DIR "/stairs/disappear_stairs.png");
+      break;
+    case StairType::BOUNCE:
+      m_ImagePath = (GA_RESOURCE_DIR "/stairs/bounce_stairs.png");
       break;
     }
     m_Drawable = std::make_shared<Util::Image>(m_ImagePath);
