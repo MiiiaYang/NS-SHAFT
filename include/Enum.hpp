@@ -10,7 +10,8 @@ enum class PhaseEnum {
   PhaseSecond = 3,
   GameoverPage = 4,
   PhaseThird = 5,
-  PhaseFourth = 6
+  PhaseFourth = 6,
+  PhaseFifth = 7
 };
 } // namespace Enum
 
