@@ -12,6 +12,7 @@
 #include <memory>
 #include <vector>
 
+#include "pages/AllPassPage.hpp"
 #include "pages/PhaseFifth.hpp"
 
 int main(int, char **) {
@@ -28,6 +29,7 @@ int main(int, char **) {
   phases.push_back(std::make_shared<PhaseThird>(PhaseThird()));
   phases.push_back(std::make_shared<PhaseFourth>(PhaseFourth()));
   phases.push_back(std::make_shared<PhaseFifth>(PhaseFifth()));
+  phases.push_back(std::make_shared<AllPassPage>(AllPassPage()));
   while (!context->GetExit()) {
     auto &phase = phases[static_cast<size_t>(currentPhase)];
 
