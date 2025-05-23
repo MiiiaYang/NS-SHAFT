@@ -493,6 +493,9 @@ void PhaseFifth::Update() {
       ++it;
     }
   }
+  if (m_pointbag->GetPointCount() >= 10) {
+    NavigationTo(Enum::PhaseEnum::AllPassPage);
+  }
 
   if (Util::Input::IsKeyPressed(Util::Keycode::P)) {
     if (m_initialTimer <= 10) {
@@ -512,7 +515,7 @@ void PhaseFifth::Update() {
 };
 
 void PhaseFifth::End() {
-  phase = Enum::PhaseEnum::PhaseFourth;
+  phase = Enum::PhaseEnum::PhaseFifth;
 
   m_Root.RemoveChild(m_boy);
   for (auto stair : m_stairs) {
