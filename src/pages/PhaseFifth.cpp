@@ -1,4 +1,4 @@
-#include "pages/PhaseFourth.hpp"
+#include "pages/PhaseFifth.hpp"
 #include "BackgroundImage.hpp"
 #include "Character.hpp"
 #include "Util/Input.hpp"
@@ -11,12 +11,12 @@
 #include <random>
 #include <vector>
 
-void PhaseFourth::Start() {
+void PhaseFifth::Start() {
   m_LevelMaskTimer = 0;
   m_IsLevelMaskVisible = true;
 
   m_LevelMask =
-      std::make_shared<Image>(GA_RESOURCE_DIR "/level_mask/level4_mask.png");
+      std::make_shared<Image>(GA_RESOURCE_DIR "/level_mask/level5_mask.png");
   m_LevelMask->SetPosition({0.0f, 0.0f});
   m_LevelMask->SetZIndex(100);
   m_Root.AddChild(m_LevelMask);
@@ -95,7 +95,7 @@ void PhaseFourth::Start() {
   m_spikes.push_back(spike_down);
 
   m_levelTitle = std::make_shared<LevelTitle>(GA_RESOURCE_DIR
-                                              "/level_title/level4_title.png");
+                                              "/level_title/level5_title.png");
   m_levelTitle->SetPosition({-470.0f, 260.0f});
   m_Root.AddChild(m_levelTitle);
 
@@ -127,7 +127,7 @@ void PhaseFourth::Start() {
   m_CurrentState = State::UPDATE;
 };
 
-void PhaseFourth::Update() {
+void PhaseFifth::Update() {
   m_boy->SetImage(GA_RESOURCE_DIR "/character/kid.png");
 
   // mask
@@ -493,9 +493,7 @@ void PhaseFourth::Update() {
       ++it;
     }
   }
-  if (m_pointbag->GetPointCount() >= 10) {
-    NavigationTo(Enum::PhaseEnum::PhaseFifth);
-  }
+
   if (Util::Input::IsKeyPressed(Util::Keycode::P)) {
     if (m_initialTimer <= 10) {
       m_initialTimer++;
@@ -513,7 +511,7 @@ void PhaseFourth::Update() {
   m_Root.Update();
 };
 
-void PhaseFourth::End() {
+void PhaseFifth::End() {
   phase = Enum::PhaseEnum::PhaseFourth;
 
   m_Root.RemoveChild(m_boy);

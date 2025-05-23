@@ -12,6 +12,8 @@
 #include <memory>
 #include <vector>
 
+#include "pages/PhaseFifth.hpp"
+
 int main(int, char **) {
 
   auto context = Core::Context::GetInstance();
@@ -25,6 +27,7 @@ int main(int, char **) {
   phases.push_back(std::make_shared<GameoverPage>(GameoverPage()));
   phases.push_back(std::make_shared<PhaseThird>(PhaseThird()));
   phases.push_back(std::make_shared<PhaseFourth>(PhaseFourth()));
+  phases.push_back(std::make_shared<PhaseFifth>(PhaseFifth()));
   while (!context->GetExit()) {
     auto &phase = phases[static_cast<size_t>(currentPhase)];
 
