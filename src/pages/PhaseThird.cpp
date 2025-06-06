@@ -362,7 +362,7 @@ void PhaseThird::Update() {
                 m_stairs.end());
           }
           break;
-        case Stairs::StairType::BASE:
+        default:
           break;
         }
       }

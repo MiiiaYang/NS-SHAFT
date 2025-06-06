@@ -8,7 +8,7 @@
 #include "component/Image.hpp"
 #include "component/LevelTitle.hpp"
 #include "component/PointSystem.hpp"
-#include "component/stairs.hpp"
+#include "component/Stairs.hpp"
 #include <memory>
 #include <vector>
 

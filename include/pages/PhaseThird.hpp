@@ -2,7 +2,7 @@
 #define PHASE_THIRD_HPP
 
 #include "Phase.hpp"
-#include "component/stairs.hpp"
+#include "component/Stairs.hpp"
 class PhaseThird : public Phase {
 public:
   int spikeCount = 0;

@@ -314,9 +314,7 @@ void PhaseSecond::Update() {
             }
           }
           break;
-        case Stairs::StairType::CRACK:
-          break;
-        case Stairs::StairType::BASE:
+        default:
           break;
         }
       }

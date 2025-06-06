@@ -3,7 +3,7 @@
 
 #include "Phase.hpp"
 #include "component/FallingObstacle.hpp"
-#include "component/stairs.hpp"
+#include "component/Stairs.hpp"
 class PhaseFourth : public Phase {
 
 public:

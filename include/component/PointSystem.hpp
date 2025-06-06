@@ -4,9 +4,9 @@
 
 #ifndef POINTSYSTEM_HPP
 #define POINTSYSTEM_HPP
+#include "Point.hpp"
 #include "Util/GameObject.hpp"
 #include "Util/Image.hpp"
-#include "component/Point.hpp"
 #include <memory>
 
 class PointSystem : public Util::GameObject {
