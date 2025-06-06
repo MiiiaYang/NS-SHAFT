@@ -5,11 +5,14 @@
 #include "Util/Logger.hpp"
 #include "component/EdgeSpikes.hpp"
 #include "component/Stairs.hpp"
-
 #include <algorithm> //(for std::sample)
 #include <memory>
 #include <random>
 #include <vector>
+#include "component/Text.hpp"
+#include <glm/fwd.hpp>
+#include <string>
+
 
 void UnlimitPage::Start() {
   m_LevelMaskTimer = 0;
@@ -123,6 +126,14 @@ void UnlimitPage::Start() {
   m_lives = 5;
   m_IsInvincible = false;
   m_InvincibleFrame = 0;
+
+  std::shared_ptr<CustomText> m_TaskText = std::make_shared<CustomText>();
+
+  int level = 1;
+  std::string text = "第 " + std::to_string(level) + " 關";
+  m_TaskText->SetText(text);
+  m_TaskText->SetPosition(glm::vec2(-560, 320));
+  m_Root.AddChild(m_TaskText);
 
   m_CurrentState = State::UPDATE;
 };
@@ -555,4 +566,5 @@ void UnlimitPage::End() {
   }
   m_obstacles.clear();
   m_CurrentState = App::State::START;
+
 };
