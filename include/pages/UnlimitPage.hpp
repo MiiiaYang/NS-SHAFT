@@ -1,14 +1,22 @@
 #ifndef UNLIMITPAGE_HPP
 #define UNLIMITPAGE_HPP
 
-#include "App.hpp"
+#include "Phase.hpp"
+#include "component/FallingObstacle.hpp"
+#include "component/stairs.hpp"
+class UnlimitPage : public Phase {
 
-class UnlimitPage : public App {
 public:
-  explicit UnlimitPage() { phase = Enum::PhaseEnum::UnlimitPage; }
+  int spikeCount = 0;
+  int obstacleTimer = 0;
+  std::shared_ptr<Stairs> m_lastDamagingStair = nullptr;
+  int m_initialTimer = 0;
+  float move_speed = 1.3f;
+  bool isBouncing = false;
 
-  // TODO: Add your game objects here
-  // Example: std::shared_ptr<Character> m_Giraffe;
+  std::vector<std::shared_ptr<FallingObstacle>> m_obstacles;
+
+  explicit UnlimitPage() { phase = Enum::PhaseEnum::UnlimitPage; }
 
   void Start() override;
   void Update() override;
