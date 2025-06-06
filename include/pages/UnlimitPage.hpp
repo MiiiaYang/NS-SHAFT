@@ -3,6 +3,7 @@
 
 #include "Phase.hpp"
 #include "component/FallingObstacle.hpp"
+#include "component/Text.hpp"
 #include "component/stairs.hpp"
 class UnlimitPage : public Phase {
 
@@ -13,8 +14,10 @@ public:
   int m_initialTimer = 0;
   float move_speed = 1.3f;
   bool isBouncing = false;
+  int level = 1;
 
   std::vector<std::shared_ptr<FallingObstacle>> m_obstacles;
+  std::shared_ptr<CustomText> m_TaskText;
 
   explicit UnlimitPage() { phase = Enum::PhaseEnum::UnlimitPage; }
 
