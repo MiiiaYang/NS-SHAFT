@@ -215,11 +215,14 @@ void PhaseFifth::Update() {
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_real_distribution<> dis(0, 1);
-  std::uniform_int_distribution<> xPosDis(-115, 115);
-  std::uniform_real_distribution<float> scaleDis(0.5f, 1.5f);
 
   if (frameCounter >= 80) {
     frameCounter = 0;
+
+    std::uniform_real_distribution<float> rendomSpeed(1.2f, 3.0f);
+    if (dis(gen) < 0.4 || move_speed > 2.5f) {
+      move_speed = rendomSpeed(gen);
+    }
 
     bool Ismoving = false;
     float direction = 1.0f;
@@ -257,6 +260,9 @@ void PhaseFifth::Update() {
         stairType = Stairs::StairType::BASE;
         spikeCount = 0;
       }
+
+      std::uniform_int_distribution<> xPosDis(-115, 115);
+      std::uniform_real_distribution<float> scaleDis(0.5f, 1.5f);
 
       auto stair = std::make_shared<Stairs>(stairType, Ismoving, direction);
       float scaleX = scaleDis(gen);    // 隨機寬度
