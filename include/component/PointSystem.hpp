@@ -39,6 +39,26 @@ public:
     AddChild(newPoint);
   }
 
+  void ClearPoints() {
+    m_PointCount = 0;
+
+    std::vector<std::shared_ptr<Util::GameObject>> toRemove;
+
+    // 先找出所有 Point 子物件
+    for (const auto &child : GetChildren()) {
+      auto point = std::dynamic_pointer_cast<Point>(child);
+      if (point != nullptr) {
+        toRemove.push_back(child); // 加入待移除清單
+      }
+    }
+
+    // 一一移除點數圖示
+    for (const auto &child : toRemove) {
+      RemoveChild(child);
+    }
+  }
+
+
   glm::vec2 GetPosition() const { return m_Transform.translation; }
 
   [[nodiscard]] int GetPointCount() const { return m_PointCount; }
