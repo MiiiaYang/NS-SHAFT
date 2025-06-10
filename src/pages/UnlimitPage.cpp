@@ -5,14 +5,13 @@
 #include "Util/Logger.hpp"
 #include "component/EdgeSpikes.hpp"
 #include "component/Stairs.hpp"
+#include "component/Text.hpp"
 #include <algorithm> //(for std::sample)
+#include <glm/fwd.hpp>
 #include <memory>
 #include <random>
-#include <vector>
-#include "component/Text.hpp"
-#include <glm/fwd.hpp>
 #include <string>
-
+#include <vector>
 
 void UnlimitPage::Start() {
   m_LevelMaskTimer = 0;
@@ -97,11 +96,6 @@ void UnlimitPage::Start() {
   m_Root.AddChild(spike_down);
   m_spikes.push_back(spike_down);
 
-  m_levelTitle = std::make_shared<LevelTitle>(GA_RESOURCE_DIR
-                                              "/level_title/level5_title.png");
-  m_levelTitle->SetPosition({-470.0f, 260.0f});
-  m_Root.AddChild(m_levelTitle);
-
   m_pointbag = std::make_shared<PointSystem>(GA_RESOURCE_DIR
                                              "/background/achievement_bag.png");
   m_pointbag->SetPosition({-410.0f, -240.0f});
@@ -127,12 +121,13 @@ void UnlimitPage::Start() {
   m_IsInvincible = false;
   m_InvincibleFrame = 0;
 
-  std::shared_ptr<CustomText> m_TaskText = std::make_shared<CustomText>();
-
-  int level = 1;
-  std::string text = "第 " + std::to_string(level) + " 關";
-  m_TaskText->SetText(text);
-  m_TaskText->SetPosition(glm::vec2(-560, 320));
+  level = 1;
+  move_speed = 1.3f;
+  frameCounter = 0;
+  levelCounter = 0;
+  m_TaskText = std::make_shared<CustomText>();
+  m_TaskText->SetText("第 " + std::to_string(level) + " 層");
+  m_TaskText->SetPosition(glm::vec2(-540, 320));
   m_Root.AddChild(m_TaskText);
 
   m_CurrentState = State::UPDATE;
@@ -148,7 +143,6 @@ void UnlimitPage::Update() {
     if (m_LevelMaskTimer >= 180) { // 假設60fps，3秒為180幀
       m_Root.RemoveChild(m_LevelMask);
       m_IsLevelMaskVisible = false;
-      m_levelTitle->SetVisible(true);
     }
     m_Root.Update();
     return;
@@ -220,14 +214,21 @@ void UnlimitPage::Update() {
     }
   }
 
-  static int frameCounter = 0;
   frameCounter++;
+  levelCounter++;
 
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_real_distribution<> dis(0, 1);
   std::uniform_int_distribution<> xPosDis(-115, 115);
   std::uniform_real_distribution<float> scaleDis(0.5f, 1.5f);
+
+  if (levelCounter >= 100) {
+    levelCounter = 0;
+    move_speed += 0.005f;
+    level++;
+    m_TaskText->SetText("第 " + std::to_string(level) + " 層");
+  }
 
   if (frameCounter >= 80) {
     frameCounter = 0;
@@ -505,8 +506,7 @@ void UnlimitPage::Update() {
     }
   }
   if (m_pointbag->GetPointCount() >= 10) {
-    if (m_lives < 5)
-    {
+    if (m_lives < 5) {
       m_hearts[m_lives]->SetImage(GA_RESOURCE_DIR "/icon/blood_fill.png");
       ++m_lives;
     }
@@ -534,6 +534,8 @@ void UnlimitPage::Update() {
 void UnlimitPage::End() {
   phase = Enum::PhaseEnum::UnlimitPage;
 
+  m_Root.RemoveChild(m_TaskText);
+
   m_Root.RemoveChild(m_boy);
   for (auto stair : m_stairs) {
     m_Root.RemoveChild(stair);
@@ -545,7 +547,6 @@ void UnlimitPage::End() {
     m_Root.RemoveChild(spike);
   }
   m_spikes.clear();
-  m_Root.RemoveChild(m_levelTitle);
   m_Root.RemoveChild(m_pointbag);
   for (auto point : m_points) {
     m_Root.RemoveChild(point);
@@ -566,5 +567,4 @@ void UnlimitPage::End() {
   }
   m_obstacles.clear();
   m_CurrentState = App::State::START;
-
 };
