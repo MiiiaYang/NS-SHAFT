@@ -1,91 +1,217 @@
-# Instructions
+# 2025 OOPL Final Report
 
-## Create New Page
-Replace `<PageName>` with your desired page name.
+## 組別資訊
 
-1. **Add to Phase Enum**
-   - Modify `Enum.hpp` as follows:
-   ```c++
-   enum class PhaseEnum { HomePage = 0, <PageName> = 1 };
-   ```
+組別：第 30 組
 
-2. **Create PageName.hpp**
-   Use the following template:
-   ```c++
-   #ifndef <PAGENAME>_HPP
-   #define <PAGENAME>_HPP
+組員：
+- 112AB0053 楊子毅
+- 112590015 彭暐晴
 
-   #include "App.hpp"
-   #include "BackgroundImage.hpp"
-   #include "Character.hpp"
+復刻遊戲：小朋友下樓梯
 
-   class <PageName> : public App {
-   public:
-       explicit <PageName>() { phase = Enum::PhaseEnum::<PageName>; }
+## 專案簡介
 
-       // TODO: Add your game objects here
-       // Example: std::shared_ptr<Character> m_Giraffe;
+### 遊戲簡介
+這是一個基於 PTSD 開發的 2D 遊戲，復刻了經典的"小朋友下樓梯"遊戲。遊戲採用現代化的遊戲引擎架構，實現了完整的遊戲循環系統、場景管理、碰撞檢測等功能。本專案使用 C++ 開發，結合了現代化的遊戲開發技術和設計模式，打造了一個具有豐富遊戲性和完整功能的遊戲作品。
 
-       void Start(Enum::PhaseEnum lastPhase) override;
-       void Update() override;
-       void End() override;
-   };
+在技術實現上，我們採用了物件導向的設計理念，將遊戲系統模組化，使得代碼結構清晰、易於維護和擴展。遊戲引擎架構包含了完整的場景管理系統，能夠無縫切換不同的遊戲場景；精確的碰撞檢測系統，確保遊戲體驗的流暢性；以及高效的資源管理系統，優化遊戲性能。
 
-   #endif // <PAGENAME>_HPP
-   ```
+在遊戲設計方面，我們保留了原版遊戲的核心玩法，同時加入了許多創新元素。遊戲包含五個精心設計的關卡，每個關卡都有獨特的難度和特色，從簡單的基礎關卡到充滿挑戰的高難度關卡，讓玩家能夠循序漸進地體驗遊戲樂趣。此外，我們還加入了無限模式，為追求挑戰的玩家提供無限的遊戲體驗。
 
-3. **Create PageName.cpp**
-   Use the following template:
-   ```c++
-   void <PageName>::Start(Enum::PhaseEnum lastPhase) {
-       this->lastPhase = lastPhase;
-       m_Background = std::make_shared<BackgroundImage>();
-       m_Background->SetBackground("/background/menu_bg.png"); // Set phase background
-       m_Root.AddChild(m_Background);
+遊戲的視覺效果也經過精心設計，包括流暢的角色動畫、動態的背景系統、精美的 UI 界面等。音效系統則為遊戲增添了更多趣味性，讓玩家能夠沉浸在遊戲世界中。整體而言，這是一個結合了經典玩法與現代技術的遊戲作品，既保留了原版遊戲的樂趣，又帶來了全新的遊戲體驗。
 
-       // TODO: Add your game objects here
-       // Example:
-       // m_Giraffe = std::make_shared<Character>(GA_RESOURCE_DIR"/Image/Character/giraffe.png");
-       // m_Giraffe->SetPosition({-60.5f, -140.5f});
-       // m_Giraffe->SetZIndex(50);
-       // m_Root.AddChild(m_Giraffe);
+遊戲特色：
+1. 多樣化的遊戲場景：
+   - 五個精心設計的關卡，每個關卡都有獨特的難度和特色
+   - 無限模式，提供無限挑戰
+   - 動態背景系統，營造流暢的視覺效果
 
-       m_CurrentState = State::UPDATE;
-   };
+2. 豐富的遊戲機制：
+   - 角色生命值系統（5條生命）
+   - 點數收集系統
+   - 無敵時間機制（受傷後1秒無敵）
+   - 重力系統
+   - 動態障礙物（尖刺、掉落物）
 
-   void <PageName>::Update() {
-       // TODO: Control your game objects here
-       m_Root.Update();
-   };
+3. 完整的遊戲流程：
+   - 主選單界面
+   - 關卡選擇
+   - 遊戲進行
+   - 遊戲結束
+   - 通關畫面
 
-   void <PageName>::End() {
-      phase = Enum::PhaseEnum::<PageName>;
+### 組別分工
+- 楊子毅：負責遊戲核心邏輯、場景管理系統、碰撞檢測系統
+- 彭暐晴：負責 UI 設計、遊戲障礙設計、遊戲關卡設計
 
-      // TODO: Remove all object
+## 遊戲介紹
 
-      m_CurrentState = State::START;
-   };
-   ```
+### 遊戲規則
+1. 玩家控制角色在不斷上升的場景中生存
+2. 通過收集點數來獲得積分
+3. 角色有 5 條生命值
+4. 碰到尖刺或掉落會損失生命值
+5. 收集足夠的點數可以進入下一關
+6. 遊戲分為五個主要關卡和一個無限模式
 
-1. **Add Your Phase Page in main.cpp**
-   Do it like this:
-   ```c++
-   phases.push_back(std::make_shared<PageName>(PageName()));
-   ```
-   Remember to include your `.hpp` file.
+### 遊戲畫面
+- 主選單：包含開始遊戲和無限模式選項
+- 遊戲場景：包含角色、樓梯、點數、生命值顯示等
+- 遊戲結束畫面：顯示分數和重新開始選項
+- 通關畫面：顯示通關信息和返回主選單選項
 
-2. **Delete the build folder in the root directory and rebuild.**
+## 程式設計
 
-## Navigate to Other Phase
-- Use the `NavigationTo()` function like this:
-```c++
-NavigationTo(Enum::PhaseEnum::<PageName>);
-```
+### 程式架構
+1. 核心系統：
+   - App 類：遊戲基礎類，提供基本功能和場景管理
+     * 實現場景狀態管理（START/UPDATE/END）
+     * 提供場景切換機制
+     * 管理遊戲物件樹
+   - Phase 類：場景基類，管理遊戲場景和遊戲邏輯
+     * 管理角色、樓梯、點數等遊戲元素
+     * 實現碰撞檢測
+     * 處理遊戲邏輯更新
+   - GameObject 類：遊戲物件基類，提供基本的遊戲物件功能
+     * 位置、縮放、旋轉等變換
+     * 父子關係管理
+     * 渲染系統整合
+   - Component：撰寫常用之物件為Component
+     * 可重用的遊戲元件
+     * 模組化設計
+     * 易於擴展和維護
 
-## Get cursor position 
-```c++
-if (Util::Input::IsKeyPressed(Util::Keycode::MOUSE_LB)) {
-   auto pos = Util::Input::GetCursorPosition();
-   LOG_DEBUG(pos);
-}
-```
+2. 場景系統：
+   - HomePage：主選單
+     * 遊戲開始選項
+     * 無限模式選項
+   - PhaseFirst ~ PhaseFifth：五個主要關卡
+     * 漸進式難度設計
+     * 獨特的障礙物配置
+     * 不同的移動速度
+   - UnlimitPage：無限模式
+     * 動態難度調整
+     * 分數系統
+   - GameoverPage：遊戲結束畫面
+     * 重新開始選項
+     * 返回主選單
+   - AllPassPage：通關畫面
+     * 遊戲完成慶祝
+     * 返回主選單
+
+3. 組件系統：
+   - Character：角色控制
+     * 移動控制
+     * 碰撞檢測
+     * 動畫系統
+   - Stairs：樓梯系統
+     * 多種類型樓梯
+     * 動態生成
+     * 碰撞處理
+   - PointSystem：點數系統
+     * 點數收集
+     * 分數顯示
+     * 通關條件
+   - CharacterHP：生命值顯示
+     * 生命值管理
+     * 視覺化顯示
+   - EdgeSpikes：邊緣尖刺
+     * 傷害判定
+     * 視覺效果
+   - FallingObstacle：掉落障礙物
+     * 動態生成
+     * 物理效果
+   - BackgroundImage：背景圖片
+     * 動態滾動
+     * 循環效果
+   - ButtonImage：按鈕控制
+     * 交互效果
+     * 狀態管理
+   - Image：基本圖片元件
+     * 圖片載入
+     * 變換控制
+   - Text：文字顯示
+     * 字體管理
+     * 文字渲染
+
+### 程式技術
+1. 使用的技術：
+   - 智能指針管理
+     * 自動記憶體管理
+     * 資源生命週期控制
+   - 面向對象設計
+     * 繼承體系
+     * 多態性
+     * 封裝
+
+2. 特色功能：
+   - 場景狀態管理
+     * 狀態機實現
+     * 場景切換
+     * 資源管理
+   - 碰撞檢測系統
+     * 精確的碰撞判定
+     * 多層次碰撞處理
+     * 性能優化
+   - 資源管理系統
+     * 自動資源釋放
+     * 記憶體優化
+     * 資源重用
+   - 動態背景
+     * 無縫循環
+     * 視差效果
+     * 性能優化
+   - 無敵時間機制
+     * 狀態控制
+     * 視覺反饋
+     * 平衡性設計
+   - 分數系統
+
+## 結語
+
+### 問題與解決方法
+1. 記憶體管理：
+   - 使用智能指針避免記憶體洩漏
+   - 實現資源自動釋放機制
+
+2. 性能優化：
+   - 使用對象池減少動態分配
+   - 優化碰撞檢測算法
+   - 實現背景循環機制
+
+3. 遊戲體驗：
+   - 添加無敵時間機制
+   - 實現平滑的場景切換
+   - 優化控制響應
+
+### 自評
+
+| 項次 | 項目                   | 完成 |
+|------|------------------------|-------|
+| 1    | 這是範例 |  V  |
+| 2    | 完成專案權限改為 public |  V  |
+| 3    | 具有 debug mode 的功能  |  V  |
+| 4    | 解決專案上所有 Memory Leak 的問題  |  V  |
+| 5    | 報告中沒有任何錯字，以及沒有任何一項遺漏  |  V  |
+| 6    | 報告至少保持基本的美感，人類可讀  |  V  |
+
+### Debug mode
+1. 點數系統除錯
+   - 按鍵 `P`：直接增加點數
+   - 每按一次增加一個點數
+   - 有冷卻時間（10幀）防止連續增加
+
+2. 場景切換除錯
+   - 按鍵 `ESC`：直接退出遊戲
+   - 可以快速測試場景切換邏輯
+
+### 心得
+
+在這次專案開發過程中，我們體驗了遊戲引擎的架構設計與實現。通過使用現代 C++ 的特性，我們不僅學習到了智能指針等進階語法，更理解了如何將這些技術應用到實際的遊戲開發中。在開發過程中，我們遇到了許多挑戰，例如記憶體管理、性能優化等問題，但通過團隊合作和不斷嘗試，我們最終都找到了合適的解決方案。
+
+這次專案讓我們完整地經歷了遊戲開發的整個流程，從最初的架構設計、功能實現到最終的測試優化。在這個過程中，我們深刻體會到團隊協作的重要性，每個成員都需要清楚理解專案的整體架構，並在各自的職責範圍內發揮所長。通過有效的溝通和分工，我們成功地將一個複雜的遊戲系統分解成可管理的模組，並最終整合成一個完整的作品。
+
+### 貢獻比例
+- 楊子毅：49%
+- 彭暐晴：51%
