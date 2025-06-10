@@ -18,7 +18,7 @@ public:
 
   explicit PhaseFifth() { phase = Enum::PhaseEnum::PhaseFifth; }
 
-  void Start() override;
+  void Start(Enum::PhaseEnum lastPhase) override;
   void Update() override;
   void End() override;
 };

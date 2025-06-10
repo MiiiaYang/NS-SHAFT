@@ -5,7 +5,8 @@
 #include "Util/Keycode.hpp"
 #include "component/ButtonImage.hpp"
 
-void GameoverPage::Start() {
+void GameoverPage::Start(Enum::PhaseEnum lastPhase) {
+  this->lastPhase = lastPhase;
   ButtonImage::ResetSelection();
   m_Background = std::make_shared<BackgroundImage>();
   m_Background->SetBackground("/background/gameover_bg.png");

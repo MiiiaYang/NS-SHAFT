@@ -20,7 +20,7 @@ public:
 
   virtual ~App() = default;
 
-  virtual void Start();
+  virtual void Start(Enum::PhaseEnum lastPhase);
 
   virtual void Update();
 
@@ -32,6 +32,7 @@ public:
   }
 
   Enum::PhaseEnum phase;
+  Enum::PhaseEnum lastPhase;
   Util::Renderer m_Root;
   State m_CurrentState = State::START;
   std::shared_ptr<BackgroundImage> m_Background;

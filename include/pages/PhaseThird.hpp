@@ -11,7 +11,7 @@ public:
 
   explicit PhaseThird() { phase = Enum::PhaseEnum::PhaseThird; }
   int m_initialTimer = 0;
-  void Start() override;
+  void Start(Enum::PhaseEnum lastPhase) override;
   void Update() override;
   void End() override;
 };

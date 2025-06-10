@@ -43,7 +43,9 @@ public:
 
   explicit Phase() {}
 
-  void Start() override {};
+  void Start(Enum::PhaseEnum lastPhase) override {
+    this->lastPhase = lastPhase;
+  };
   void Update() override {};
   void End() override {};
 };
