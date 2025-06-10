@@ -23,7 +23,7 @@ void GameoverPage::Start(Enum::PhaseEnum lastPhase) {
                                             "/menu/Restart_button_hover.png",
                                             250, -250, 100, 22);
   m_Button2->SetPosition({250, -250});
-  m_Button2->SetNavigationCallback(Enum::PhaseEnum::PhaseFirst);
+  m_Button2->SetNavigationCallback(lastPhase);
   m_Root.AddChild(m_Button2);
 
   m_Button1->SetSelected(true);
