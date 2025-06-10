@@ -5,7 +5,8 @@
 #include "Util/Keycode.hpp"
 #include "component/ButtonImage.hpp"
 
-void GameoverPage::Start() {
+void GameoverPage::Start(Enum::PhaseEnum lastPhase) {
+  this->lastPhase = lastPhase;
   ButtonImage::ResetSelection();
   m_Background = std::make_shared<BackgroundImage>();
   m_Background->SetBackground("/background/gameover_bg.png");
@@ -22,7 +23,7 @@ void GameoverPage::Start() {
                                             "/menu/Restart_button_hover.png",
                                             250, -250, 100, 22);
   m_Button2->SetPosition({250, -250});
-  m_Button2->SetNavigationCallback(Enum::PhaseEnum::PhaseFirst);
+  m_Button2->SetNavigationCallback(lastPhase);
   m_Root.AddChild(m_Button2);
 
   m_Button1->SetSelected(true);

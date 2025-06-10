@@ -12,7 +12,7 @@ public:
 
   explicit HomePage() { phase = Enum::PhaseEnum::HomePage; }
 
-  void Start() override;
+  void Start(Enum::PhaseEnum lastPhase) override;
   void Update() override;
   void End() override;
 };

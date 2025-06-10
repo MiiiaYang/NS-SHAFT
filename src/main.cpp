@@ -5,10 +5,10 @@
 #include "pages/GameoverPage.hpp"
 #include "pages/HomePage.hpp"
 #include "pages/PhaseFirst.hpp"
-#include "pages/PhaseSecond.hpp"
-#include "pages/UnlimitPage.hpp"
-#include "pages/PhaseThird.hpp"
 #include "pages/PhaseFourth.hpp"
+#include "pages/PhaseSecond.hpp"
+#include "pages/PhaseThird.hpp"
+#include "pages/UnlimitPage.hpp"
 #include <memory>
 #include <vector>
 
@@ -20,6 +20,7 @@ int main(int, char **) {
   auto context = Core::Context::GetInstance();
   auto phases = std::vector<std::shared_ptr<App>>();
   auto currentPhase = Enum::PhaseEnum::HomePage;
+  auto lastPhase = Enum::PhaseEnum::HomePage;
 
   phases.push_back(std::make_shared<HomePage>(HomePage()));
   phases.push_back(std::make_shared<UnlimitPage>(UnlimitPage()));
@@ -39,12 +40,13 @@ int main(int, char **) {
     }
 
     if (phase && (phase->GetPhase() != currentPhase)) {
+      lastPhase = currentPhase;
       currentPhase = phase->GetPhase();
     }
 
     switch (phase->GetCurrentState()) {
     case App::State::START:
-      phase->Start();
+      phase->Start(lastPhase);
       break;
 
     case App::State::UPDATE:

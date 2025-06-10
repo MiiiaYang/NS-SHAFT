@@ -4,7 +4,8 @@
 #include "Util/Keycode.hpp"
 #include "component/ButtonImage.hpp"
 
-void HomePage::Start() {
+void HomePage::Start(Enum::PhaseEnum lastPhase) {
+  this->lastPhase = lastPhase;
   m_initialTimer = 0;
   m_Background = std::make_shared<BackgroundImage>();
   m_Background->SetBackground("/background/menu_bg.png");
@@ -21,7 +22,7 @@ void HomePage::Start() {
                                             "/menu/level_button_hover.png", 250,
                                             -250, 100, 22);
   m_Button2->SetPosition({250, -250});
-  m_Button2->SetNavigationCallback(Enum::PhaseEnum::PhaseFifth);
+  m_Button2->SetNavigationCallback(Enum::PhaseEnum::PhaseFirst);
   m_Root.AddChild(m_Button2);
 
   m_Button1->SetSelected(true);

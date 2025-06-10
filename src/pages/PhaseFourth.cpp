@@ -11,7 +11,8 @@
 #include <random>
 #include <vector>
 
-void PhaseFourth::Start() {
+void PhaseFourth::Start(Enum::PhaseEnum lastPhase) {
+  this->lastPhase = lastPhase;
   m_LevelMaskTimer = 0;
   m_IsLevelMaskVisible = true;
 

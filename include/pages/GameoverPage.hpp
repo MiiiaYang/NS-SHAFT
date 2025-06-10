@@ -2,15 +2,15 @@
 #define GAMEOVERPAGE_HPP
 #include "../component/ButtonImage.hpp"
 #include "App.hpp"
-class GameoverPage:public App{
+class GameoverPage : public App {
 public:
-    std::shared_ptr<ButtonImage> m_Button1;
-    std::shared_ptr<ButtonImage> m_Button2;
+  std::shared_ptr<ButtonImage> m_Button1;
+  std::shared_ptr<ButtonImage> m_Button2;
 
-    explicit GameoverPage() { phase = Enum::PhaseEnum::GameoverPage; }
+  explicit GameoverPage() { phase = Enum::PhaseEnum::GameoverPage; }
 
-    void Start() override;
-    void Update() override;
-    void End() override;
+  void Start(Enum::PhaseEnum lastPhase) override;
+  void Update() override;
+  void End() override;
 };
-#endif //GAMEOVERPAGE_HPP
+#endif // GAMEOVERPAGE_HPP

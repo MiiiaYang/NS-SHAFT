@@ -5,8 +5,8 @@
 #include "Util/Keycode.hpp"
 #include "component/ButtonImage.hpp"
 
-void AllPassPage::Start() {
-    ButtonImage::ResetSelection();
+void AllPassPage::Start(Enum::PhaseEnum lastPhase) {
+    this->lastPhase = lastPhase;
     m_Background = std::make_shared<BackgroundImage>();
     m_Background->SetBackground("/background/AllPass_bg.png");
     m_Root.AddChild(m_Background);

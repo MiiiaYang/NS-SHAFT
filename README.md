@@ -26,7 +26,7 @@ Replace `<PageName>` with your desired page name.
        // TODO: Add your game objects here
        // Example: std::shared_ptr<Character> m_Giraffe;
 
-       void Start() override;
+       void Start(Enum::PhaseEnum lastPhase) override;
        void Update() override;
        void End() override;
    };
@@ -37,7 +37,8 @@ Replace `<PageName>` with your desired page name.
 3. **Create PageName.cpp**
    Use the following template:
    ```c++
-   void <PageName>::Start() {
+   void <PageName>::Start(Enum::PhaseEnum lastPhase) {
+       this->lastPhase = lastPhase;
        m_Background = std::make_shared<BackgroundImage>();
        m_Background->SetBackground("/background/menu_bg.png"); // Set phase background
        m_Root.AddChild(m_Background);
