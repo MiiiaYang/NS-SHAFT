@@ -8,7 +8,7 @@
 #include "component/Image.hpp"
 #include "component/LevelTitle.hpp"
 #include "component/PointSystem.hpp"
-#include "component/stairs.hpp"
+#include "component/Stairs.hpp"
 #include <memory>
 #include <vector>
 
@@ -43,7 +43,9 @@ public:
 
   explicit Phase() {}
 
-  void Start() override {};
+  void Start(Enum::PhaseEnum lastPhase) override {
+    this->lastPhase = lastPhase;
+  };
   void Update() override {};
   void End() override {};
 };

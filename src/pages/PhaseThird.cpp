@@ -1,25 +1,23 @@
-#include "pages/UnlimitPage.hpp"
+#include "pages/PhaseThird.hpp"
 #include "BackgroundImage.hpp"
 #include "Character.hpp"
 #include "Util/Input.hpp"
 #include "Util/Logger.hpp"
 #include "component/EdgeSpikes.hpp"
 #include "component/Stairs.hpp"
-#include "component/Text.hpp"
+
 #include <algorithm> //(for std::sample)
-#include <glm/fwd.hpp>
 #include <memory>
 #include <random>
-#include <string>
 #include <vector>
 
-void UnlimitPage::Start(Enum::PhaseEnum lastPhase) {
+void PhaseThird::Start(Enum::PhaseEnum lastPhase) {
   this->lastPhase = lastPhase;
   m_LevelMaskTimer = 0;
   m_IsLevelMaskVisible = true;
 
   m_LevelMask =
-      std::make_shared<Image>(GA_RESOURCE_DIR "/level_mask/Unlimit_mask.png");
+      std::make_shared<Image>(GA_RESOURCE_DIR "/level_mask/level3_mask.png");
   m_LevelMask->SetPosition({0.0f, 0.0f});
   m_LevelMask->SetZIndex(100);
   m_Root.AddChild(m_LevelMask);
@@ -97,6 +95,11 @@ void UnlimitPage::Start(Enum::PhaseEnum lastPhase) {
   m_Root.AddChild(spike_down);
   m_spikes.push_back(spike_down);
 
+  m_levelTitle = std::make_shared<LevelTitle>(GA_RESOURCE_DIR
+                                              "/level_title/level3_title.png");
+  m_levelTitle->SetPosition({-470.0f, 260.0f});
+  m_Root.AddChild(m_levelTitle);
+
   m_pointbag = std::make_shared<PointSystem>(GA_RESOURCE_DIR
                                              "/background/achievement_bag.png");
   m_pointbag->SetPosition({-410.0f, -240.0f});
@@ -122,19 +125,10 @@ void UnlimitPage::Start(Enum::PhaseEnum lastPhase) {
   m_IsInvincible = false;
   m_InvincibleFrame = 0;
 
-  level = 1;
-  move_speed = 1.3f;
-  frameCounter = 0;
-  levelCounter = 0;
-  m_TaskText = std::make_shared<CustomText>();
-  m_TaskText->SetText("第 " + std::to_string(level) + " 層");
-  m_TaskText->SetPosition(glm::vec2(-540, 320));
-  m_Root.AddChild(m_TaskText);
-
   m_CurrentState = State::UPDATE;
 };
 
-void UnlimitPage::Update() {
+void PhaseThird::Update() {
   m_boy->SetImage(GA_RESOURCE_DIR "/character/kid.png");
 
   // mask
@@ -144,6 +138,7 @@ void UnlimitPage::Update() {
     if (m_LevelMaskTimer >= 180) { // 假設60fps，3秒為180幀
       m_Root.RemoveChild(m_LevelMask);
       m_IsLevelMaskVisible = false;
+      m_levelTitle->SetVisible(true);
     }
     m_Root.Update();
     return;
@@ -173,24 +168,7 @@ void UnlimitPage::Update() {
     auto pos = point->GetPosition();
     point->SetPosition({pos.x, pos.y + move_speed});
   }
-  // 掉落物移動
-  for (auto it = m_obstacles.begin(); it != m_obstacles.end();) {
-    auto obstacle = *it;
 
-    glm::vec2 pos = obstacle->GetPosition();
-    pos.y -= obstacle->GetSpeed();
-    obstacle->SetPosition(pos);
-    obstacle->SetZIndex(90);
-
-    if (obstacle->GetPosition().y < -360.0f) {
-      m_Root.RemoveChild(obstacle);
-      it = m_obstacles.erase(it);
-    } else {
-      ++it;
-    }
-  }
-
-  // 超出螢幕刪除
   for (auto it = m_stairs.begin(); it != m_stairs.end();) {
     auto stair = *it;
     auto pos = stair->getPosition();
@@ -215,45 +193,30 @@ void UnlimitPage::Update() {
     }
   }
 
+  static int frameCounter = 0;
   frameCounter++;
-  levelCounter++;
-
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_real_distribution<> dis(0, 1);
-  std::uniform_int_distribution<> xPosDis(-115, 115);
-  std::uniform_real_distribution<float> scaleDis(0.5f, 1.5f);
-
-  if (levelCounter >= 100) {
-    levelCounter = 0;
-    move_speed += 0.005f;
-    level++;
-    m_TaskText->SetText("第 " + std::to_string(level) + " 層");
-  }
 
   if (frameCounter >= 80) {
     frameCounter = 0;
 
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dis(0, 1);
+    std::uniform_int_distribution<> xPosDis(-115, 115);
+    std::uniform_real_distribution<float> scaleDis(0.5f, 1.5f);
+
     bool Ismoving = false;
     float direction = 1.0f;
-
     if (dis(gen) < 0.6) {
+
       // 隨機生成樓梯
       auto stairType = [&]() {
         float r = dis(gen);
-
-        float CrackRate = 0.25f;
-        float SpikeRate = 0.2f;
-        float BounceRate = 0.3f;
-        // max = 1.0 => 100%
-        // other is Base
-
-        if (r < CrackRate)
+        if (r < 0.3) // 30% Crack
           return Stairs::StairType::CRACK;
-        if (r < CrackRate + SpikeRate)
+        if (r < 0.6) // 30% Spike
           return Stairs::StairType::SPIKE;
-        if (r < CrackRate + SpikeRate + BounceRate)
-          return Stairs::StairType::BOUNCE;
+        // other 40% Base
         return Stairs::StairType::BASE;
       }();
 
@@ -302,23 +265,6 @@ void UnlimitPage::Update() {
     target = {target.x - 5, target.y};
   }
 
-  // 掉落障礙物
-  obstacleTimer++;
-  std::uniform_int_distribution<> obstacle_xPosDis(-180, 180);
-
-  if (obstacleTimer >= 120) { // 每2秒生成一個（60fps為單位）
-    obstacleTimer = 0;
-
-    if (dis(gen) < 0.5) {
-      auto obstacle = std::make_shared<FallingObstacle>(GA_RESOURCE_DIR
-                                                        "/icon/obstacle.png");
-      obstacle->SetPosition({static_cast<float>(obstacle_xPosDis(gen)),
-                             360.0f}); // 從畫面頂端掉落
-      m_Root.AddChild(obstacle);
-      m_obstacles.push_back(obstacle);
-    }
-  }
-
   if (Util::Input::IsKeyPressed(Util::Keycode::D)) {
     if ((frameCounter / 5) % 2 == 0) {
       m_boy->SetImage(GA_RESOURCE_DIR "/character/kid_right.png");
@@ -333,6 +279,11 @@ void UnlimitPage::Update() {
       target.y > -330.000000) {
     m_boy->SetPosition(target);
   }
+
+  // if (m_IsGrounded && Util::Input::IsKeyPressed(Util::Keycode::W)) {
+  //   m_VerticalVelocity = 7.0f;
+  //   m_IsGrounded = false;
+  // }
 
   // 重力計算
   float posX = m_boy->GetPosition().x;
@@ -370,7 +321,6 @@ void UnlimitPage::Update() {
       m_stairs[i]->SetPosition({x, y});
     }
   }
-
   for (size_t i = 0; i < m_stairs.size(); i++) {
     auto stair = m_stairs[i];
     if (stair->GetType() == Stairs::StairType::CRACK &&
@@ -384,12 +334,9 @@ void UnlimitPage::Update() {
 
   for (size_t i = 0; i < m_stairs.size(); i++) {
     auto collisionResult = m_boy->IsCollidingWith(m_stairs[i]);
-
     if (collisionResult.isColliding &&
         collisionResult.side == Character::CollisionSide::Top) {
-
       isOnStair = true;
-      isBouncing = false;
       currentStair = m_stairs[i];
 
       if (currentStair) {
@@ -416,13 +363,7 @@ void UnlimitPage::Update() {
                 m_stairs.end());
           }
           break;
-        case Stairs::StairType::BOUNCE:
-          m_VerticalVelocity = 10.0f; // 設置彈跳速度
-          isOnStair = false;
-          m_IsGrounded = false;
-          isBouncing = true;
-          break;
-        case Stairs::StairType::BASE:
+        default:
           break;
         }
       }
@@ -434,36 +375,19 @@ void UnlimitPage::Update() {
     m_lastDamagingStair = nullptr;
   }
 
-  if (!isBouncing && isOnStair) {
+  if (isOnStair) {
     m_VerticalVelocity = 0.0f;
     m_IsGrounded = true;
     float setPos = currentStair->GetPosition().y +
                    currentStair->GetSize().height / 2 +
                    m_boy->GetSize().height / 2;
     m_boy->SetPosition({posX, setPos});
+
   } else if (!m_IsGrounded) {
     m_boy->SetPosition({posX, posY});
   }
-  // 碰撞判斷
-  if (!m_IsInvincible) {
-    for (auto it = m_obstacles.begin(); it != m_obstacles.end();) {
-      auto obstacle = *it;
-      if (m_boy->IsCollidingWith(obstacle).isColliding) {
-        if (m_lives > 0) {
-          --m_lives;
-          m_hearts[m_lives]->SetImage(GA_RESOURCE_DIR "/icon/blood_stroke.png");
 
-          // 啟動無敵模式
-          m_IsInvincible = true;
-          m_InvincibleFrame = m_InvincibleFrameDuration;
-        }
-        // 撞到就移除障礙物
-        m_Root.RemoveChild(obstacle);
-        it = m_obstacles.erase(it);
-      } else {
-        ++it;
-      }
-    }
+  if (!m_IsInvincible) {
     for (size_t i = 0; i < m_spikes.size(); i++) {
       if (m_boy->IsCollidingWith(m_spikes[i]).isColliding) {
 
@@ -507,12 +431,12 @@ void UnlimitPage::Update() {
     }
   }
   if (m_pointbag->GetPointCount() >= 10) {
-    if (m_lives < 5) {
-      m_hearts[m_lives]->SetImage(GA_RESOURCE_DIR "/icon/blood_fill.png");
-      ++m_lives;
-    }
-    // 歸零點數 & 清除圖示
-    m_pointbag->ClearPoints();
+    NavigationTo(Enum::PhaseEnum::PhaseFourth);
+  }
+
+  if (Util::Input::IsKeyPressed(Util::Keycode::MOUSE_LB)) {
+    auto pos = Util::Input::GetCursorPosition();
+    LOG_DEBUG(pos);
   }
 
   if (Util::Input::IsKeyPressed(Util::Keycode::P)) {
@@ -524,18 +448,11 @@ void UnlimitPage::Update() {
     }
   }
 
-  if (Util::Input::IsKeyPressed(Util::Keycode::MOUSE_LB)) {
-    auto pos = Util::Input::GetCursorPosition();
-    LOG_DEBUG(pos);
-  }
-
   m_Root.Update();
 };
 
-void UnlimitPage::End() {
-  phase = Enum::PhaseEnum::UnlimitPage;
-
-  m_Root.RemoveChild(m_TaskText);
+void PhaseThird::End() {
+  phase = Enum::PhaseEnum::PhaseThird;
 
   m_Root.RemoveChild(m_boy);
   for (auto stair : m_stairs) {
@@ -548,6 +465,7 @@ void UnlimitPage::End() {
     m_Root.RemoveChild(spike);
   }
   m_spikes.clear();
+  m_Root.RemoveChild(m_levelTitle);
   m_Root.RemoveChild(m_pointbag);
   for (auto point : m_points) {
     m_Root.RemoveChild(point);
@@ -563,9 +481,5 @@ void UnlimitPage::End() {
   }
   m_hearts.clear();
   m_Root.RemoveChild(m_LevelMask);
-  for (auto obstacle : m_obstacles) {
-    m_Root.RemoveChild(obstacle);
-  }
-  m_obstacles.clear();
   m_CurrentState = App::State::START;
 };

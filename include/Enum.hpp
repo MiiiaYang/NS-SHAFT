@@ -8,7 +8,11 @@ enum class PhaseEnum {
   UnlimitPage = 1,
   PhaseFirst = 2,
   PhaseSecond = 3,
-  GameoverPage = 4
+  GameoverPage = 4,
+  PhaseThird = 5,
+  PhaseFourth = 6,
+  PhaseFifth = 7,
+  AllPassPage = 8
 };
 } // namespace Enum
 

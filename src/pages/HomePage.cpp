@@ -4,7 +4,8 @@
 #include "Util/Keycode.hpp"
 #include "component/ButtonImage.hpp"
 
-void HomePage::Start() {
+void HomePage::Start(Enum::PhaseEnum lastPhase) {
+  this->lastPhase = lastPhase;
   m_initialTimer = 0;
   m_Background = std::make_shared<BackgroundImage>();
   m_Background->SetBackground("/background/menu_bg.png");
@@ -30,15 +31,15 @@ void HomePage::Start() {
 }
 
 void HomePage::Update() {
-  if (m_initialTimer<=12)
-  {
+  if (m_initialTimer <= 12) {
     m_initialTimer++;
   }
 
   std::vector<ButtonImage *> buttons = {m_Button1.get(), m_Button2.get()};
   ButtonImage::UpdateButtonNavigation(buttons);
 
-  if (Util::Input::IsKeyPressed(Util::Keycode::RETURN)&& m_initialTimer>=12) {
+  if (Util::Input::IsKeyPressed(Util::Keycode::RETURN) &&
+      m_initialTimer >= 12) {
     Enum::PhaseEnum selectedPage = ButtonImage::GetSelectedDestination();
     NavigationTo(selectedPage);
   }

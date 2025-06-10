@@ -1,4 +1,4 @@
-# Instructions
+# Development
 
 ## Create New Page
 Replace `<PageName>` with your desired page name.

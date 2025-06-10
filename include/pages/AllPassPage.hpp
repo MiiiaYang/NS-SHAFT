@@ -1,20 +1,16 @@
-#ifndef HOMEPAGE_HPP
-#define HOMEPAGE_HPP
-
+#ifndef AllPassPage_HPP
+#define AllPassPage_HPP
 #include "../component/ButtonImage.hpp"
 #include "App.hpp"
-
-class HomePage : public App {
+class AllPassPage : public App {
 public:
   std::shared_ptr<ButtonImage> m_Button1;
   std::shared_ptr<ButtonImage> m_Button2;
-  int m_initialTimer = 0;
 
-  explicit HomePage() { phase = Enum::PhaseEnum::HomePage; }
+  explicit AllPassPage() { phase = Enum::PhaseEnum::AllPassPage; }
 
   void Start(Enum::PhaseEnum lastPhase) override;
   void Update() override;
   void End() override;
 };
-
-#endif // HOMEPAGE_HPP
+#endif // AllPassPage_HPP

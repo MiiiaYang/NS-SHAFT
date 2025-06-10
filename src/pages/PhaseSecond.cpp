@@ -5,14 +5,14 @@
 #include "Util/Logger.hpp"
 #include "component/EdgeSpikes.hpp"
 #include "component/Stairs.hpp"
-#include "component/stairs.hpp"
 
 #include <algorithm> //(for std::sample)
 #include <memory>
 #include <random>
 #include <vector>
 
-void PhaseSecond::Start() {
+void PhaseSecond::Start(Enum::PhaseEnum lastPhase) {
+  this->lastPhase = lastPhase;
   m_LevelMaskTimer = 0;
   m_IsLevelMaskVisible = true;
 
@@ -55,6 +55,7 @@ void PhaseSecond::Start() {
     float yPos = startY - i * yStep;
 
     stair->SetPosition({xPos, yPos});
+    stair->SetZIndex(40);
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<float> scaleDis(
@@ -69,6 +70,7 @@ void PhaseSecond::Start() {
       auto point =
           std::make_shared<PointSystem>(GA_RESOURCE_DIR "/icon/badge.png");
       point->SetPosition({xPos, yPos + 20});
+      point->SetZIndex(50);
       m_Root.AddChild(point);
       m_points.push_back(point);
     }
@@ -83,12 +85,14 @@ void PhaseSecond::Start() {
   spike_up =
       std::make_shared<EdgeSpike>(GA_RESOURCE_DIR "/background/spikes_top.png");
   spike_up->SetPosition({10.0f, 345.0f});
+  spike_up->SetZIndex(60);
   m_Root.AddChild(spike_up);
   m_spikes.push_back(spike_up);
 
   spike_down = std::make_shared<EdgeSpike>(GA_RESOURCE_DIR
                                            "/background/spikes_bottom.png");
   spike_down->SetPosition({10.0f, -345.0f});
+  spike_down->SetZIndex(60);
   m_Root.AddChild(spike_down);
   m_spikes.push_back(spike_down);
 
@@ -144,7 +148,7 @@ void PhaseSecond::Update() {
   // 移動背景
   for (auto background : m_Background) {
     auto pos = background->GetPosition();
-    background->SetPosition({pos.x, pos.y + 1.2});
+    background->SetPosition({pos.x, pos.y + move_speed});
   }
 
   // 背景循環邏輯
@@ -157,13 +161,13 @@ void PhaseSecond::Update() {
   // 樓梯移動
   for (auto stair : m_stairs) {
     auto pos = stair->getPosition();
-    stair->SetPosition({pos.x, pos.y + 1.2});
+    stair->SetPosition({pos.x, pos.y + move_speed});
   }
 
   // 點數向上移動
   for (auto point : m_points) {
     auto pos = point->GetPosition();
-    point->SetPosition({pos.x, pos.y + 1.2});
+    point->SetPosition({pos.x, pos.y + move_speed});
   }
 
   for (auto it = m_stairs.begin(); it != m_stairs.end();) {
@@ -173,7 +177,6 @@ void PhaseSecond::Update() {
     if (pos.y > (m_Background[0]->GetSize().height / 2)) {
       m_Root.RemoveChild(stair);
       it = m_stairs.erase(it);
-      LOG_DEBUG("remove");
     } else {
       ++it;
     }
@@ -205,8 +208,13 @@ void PhaseSecond::Update() {
 
     if (dis(gen) < 0.6) {
       // 隨機生成樓梯
-      auto stairType =
-          (dis(gen) < 0.4) ? Stairs::StairType::SPIKE : Stairs::StairType::BASE;
+      auto stairType = [&]() {
+        float r = dis(gen);
+        if (r < 0.4) // 40% Spike
+          return Stairs::StairType::SPIKE;
+        // other 60% Base
+        return Stairs::StairType::BASE;
+      }();
 
       if (stairType == Stairs::StairType::SPIKE) {
         spikeCount++;
@@ -220,7 +228,7 @@ void PhaseSecond::Update() {
       auto stair = std::make_shared<Stairs>(stairType);
       float scaleX = scaleDis(gen);    // 隨機寬度
       stair->SetScale({scaleX, 1.0f}); // 設定樓梯寬度
-
+      stair->SetZIndex(40);
       stair->SetPosition({static_cast<float>(xPosDis(gen)),
                           -(m_Background[0]->GetSize().height / 2 + 50)});
       m_Root.AddChild(stair);
@@ -231,6 +239,7 @@ void PhaseSecond::Update() {
             std::make_shared<PointSystem>(GA_RESOURCE_DIR "/icon/badge.png");
         glm::vec2 stairPos = stair->GetPosition();
         point->SetPosition({stairPos.x, stairPos.y + 20});
+        point->SetZIndex(50);
         m_Root.AddChild(point);
         m_points.push_back(point);
       }
@@ -239,25 +248,18 @@ void PhaseSecond::Update() {
 
   glm::vec2 target = m_boy->GetPosition();
   if (Util::Input::IsKeyPressed(Util::Keycode::A)) {
-    if ((frameCounter/5)%2==0)
-    {
+    if ((frameCounter / 5) % 2 == 0) {
       m_boy->SetImage(GA_RESOURCE_DIR "/character/kid_left.png");
-    }
-    else
-    {
+    } else {
       m_boy->SetImage(GA_RESOURCE_DIR "/character/kid_leftgo.png");
-
     }
     target = {target.x - 5, target.y};
   }
 
   if (Util::Input::IsKeyPressed(Util::Keycode::D)) {
-    if ((frameCounter/5)%2==0)
-    {
+    if ((frameCounter / 5) % 2 == 0) {
       m_boy->SetImage(GA_RESOURCE_DIR "/character/kid_right.png");
-    }
-    else
-    {
+    } else {
       m_boy->SetImage(GA_RESOURCE_DIR "/character/kid_rightgo.png");
     }
     target = {target.x + 5, target.y};
@@ -299,16 +301,22 @@ void PhaseSecond::Update() {
       isOnStair = true;
       currentStair = m_stairs[i];
 
-      if (currentStair && currentStair->GetType() == Stairs::StairType::SPIKE &&
-          currentStair != m_lastDamagingStair && !m_IsInvincible) {
-        if (m_lives > 0) {
-          --m_lives;
-          m_hearts[m_lives]->SetImage(GA_RESOURCE_DIR "/icon/blood_stroke.png");
-
-          m_lastDamagingStair = currentStair;
-
-          m_IsInvincible = true;
-          m_InvincibleFrame = m_InvincibleFrameDuration;
+      if (currentStair) {
+        switch (currentStair->GetType()) {
+        case Stairs::StairType::SPIKE:
+          if (currentStair != m_lastDamagingStair && !m_IsInvincible) {
+            if (m_lives > 0) {
+              --m_lives;
+              m_hearts[m_lives]->SetImage(GA_RESOURCE_DIR
+                                          "/icon/blood_stroke.png");
+              m_lastDamagingStair = currentStair;
+              m_IsInvincible = true;
+              m_InvincibleFrame = m_InvincibleFrameDuration;
+            }
+          }
+          break;
+        default:
+          break;
         }
       }
       break;
@@ -322,16 +330,13 @@ void PhaseSecond::Update() {
   if (isOnStair) {
     m_VerticalVelocity = 0.0f;
     m_IsGrounded = true;
-    glm::vec2 charPos = m_boy->GetPosition();
-    m_boy->SetPosition({charPos.x, charPos.y + 1.2});
+    float setPos = currentStair->GetPosition().y +
+                   currentStair->GetSize().height / 2 +
+                   m_boy->GetSize().height / 2;
+    m_boy->SetPosition({posX, setPos});
 
   } else if (!m_IsGrounded) {
     m_boy->SetPosition({posX, posY});
-  }
-
-  if (Util::Input::IsKeyPressed(Util::Keycode::MOUSE_LB)) {
-    auto pos = Util::Input::GetCursorPosition();
-    LOG_DEBUG(pos);
   }
 
   if (!m_IsInvincible) {
@@ -352,7 +357,6 @@ void PhaseSecond::Update() {
   }
 
   if (m_lives == 0) {
-    LOG_DEBUG("Player is dead");
     NavigationTo(Enum::PhaseEnum::GameoverPage);
   }
 
@@ -374,11 +378,26 @@ void PhaseSecond::Update() {
       // 確保點數完全移除
       m_Root.RemoveChild(*it);
       it = m_points.erase(it); // 從列表中刪除
-      LOG_DEBUG("Collide with Point");
-
     } else {
       ++it;
     }
+  }
+  if (m_pointbag->GetPointCount() >= 10) {
+    NavigationTo(Enum::PhaseEnum::PhaseThird);
+  }
+
+  if (Util::Input::IsKeyPressed(Util::Keycode::P)) {
+    if (m_initialTimer <= 10) {
+      m_initialTimer++;
+    } else {
+      m_pointbag->AddPoint();
+      m_initialTimer = 0;
+    }
+  }
+
+  if (Util::Input::IsKeyPressed(Util::Keycode::MOUSE_LB)) {
+    auto pos = Util::Input::GetCursorPosition();
+    LOG_DEBUG(pos);
   }
 
   m_Root.Update();
